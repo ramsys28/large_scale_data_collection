@@ -13,11 +13,45 @@ import matplotlib.pyplot as plt
 
 
 ##############################################################################
+#################### Abbreviated Math Anxiety Scale ##########################
+##############################################################################
+
+def run_AMAS(df, out_dir=None):
+
+
+    #Calculate total score as the sum of Item 1-9.
+
+    cols = ['AMAS[1]',
+            'AMAS[2]',
+            'AMAS[3]',
+            'AMAS[4]',
+            'AMAS[5]',
+            'AMAS[6]',
+            'AMAS[7]',
+            'AMAS[8]',
+            'AMAS[9]']
+
+    df['AMAS_sum'] = df[cols].sum(axis=1)
+
+    print "Questionnaire measures math anxiety (total score is calculated as the sum of the 9 items)\n"
+    print df["AMAS_sum"].describe()
+    sns.distplot(df["AMAS_sum"].dropna(), kde = True)
+
+    if out_dir:
+        df['ID'] = df['ID'].map(lambda x: str(x)[0:5])
+        df.rename(columns=dict(zip(cols, [x+1 for x in range(len(cols))])), inplace=True)
+        cols_export = ['ID'] + [x+1 for x in range(len(cols))] + ['AMAS_sum']
+        df[cols_export].to_csv('%s/AMAS.csv' % out_dir, index=False)
+
+
+
+
+##############################################################################
 ########################## self control scale ################################
 ##############################################################################
 
 def run_SelfCtrl(df, out_dir=None):
-    #items to be recoded                                
+    #items to be recoded
     items_recoded = ['SCSaBASEQ[SCS2r]',
                      'SCSaBASEQ[SCS3r]',
                      'SCSaBASEQ[SCS4r]',
@@ -27,15 +61,15 @@ def run_SelfCtrl(df, out_dir=None):
                      'SCSbBASEQ[SCS8r]',
                      'SCSbBASEQ[SCS9r]',
                      'SCSbBASEQ[SCS10r]',
-                     'SCSbBASEQ[SCS11r]' ]    
-                             
-    #recode items                 
+                     'SCSbBASEQ[SCS11r]' ]
+
+    #recode items
     recoder = {1: 5, 2: 4, 4: 2, 5: 1 }
     for i in items_recoded:
-        df[i] = df[i].map(recoder).astype(float64)   
+        df[i] = df[i].map(recoder).astype(float64)
 
     #Calculate total score as the sum of Item 1-13.
-    
+
     cols = ['SCSaBASEQ[SCS1]',
             'SCSaBASEQ[SCS2r]',
             'SCSaBASEQ[SCS3r]',
@@ -48,31 +82,31 @@ def run_SelfCtrl(df, out_dir=None):
             'SCSbBASEQ[SCS10r]',
             'SCSbBASEQ[SCS11r]',
             'SCSbBASEQ[SCS12]',
-            'SCSbBASEQ[SCS13]']    
-    
+            'SCSbBASEQ[SCS13]']
+
     df['SelfCtrl_sum'] = df[cols].sum(axis=1)
-                      
-    print "Questionnaire measures self control (total score is calculated as the sum of the 13 items)\n"   
-    print df["SelfCtrl_sum"].describe() 
+
+    print "Questionnaire measures self control (total score is calculated as the sum of the 13 items)\n"
+    print df["SelfCtrl_sum"].describe()
     sns.distplot(df["SelfCtrl_sum"].dropna(), kde = True)
-    
+
     if out_dir:
-        df['ID'] = df['ID'].map(lambda x: str(x)[0:5])        
+        df['ID'] = df['ID'].map(lambda x: str(x)[0:5])
         df.rename(columns=dict(zip(cols, [x+1 for x in range(len(cols))])), inplace=True)
         cols_export = ['ID'] + [x+1 for x in range(len(cols))] + ['SelfCtrl_sum']
         df[cols_export].to_csv('%s/self_control.csv' % out_dir, index=False)
-        
-    
 
-##############################################################################                      
+
+
+##############################################################################
 ################ Internet Addiction test #####################################
 ##############################################################################
 #note: Item 3 not included due to differerent scale format
 
 def run_IAT(df, out_dir=None):
-                              
+
     #Calculate total score as the sum of Item 1-19.
-    
+
     cols = ['IATaBASEQ[IAT1]',
             'IATaBASEQ[IAT2]',
             'IATcBASEQ[IAT4]',
@@ -91,15 +125,15 @@ def run_IAT(df, out_dir=None):
             'IATdBASEQ[IAT17]',
             'IATdBASEQ[IAT18]',
             'IATdBASEQ[IAT19]',
-            'IATdBASEQ[IAT20]']    
+            'IATdBASEQ[IAT20]']
     df['IAT_sum'] = df[cols].sum(axis=1)
-    
-    print "Questionnaire measures internet addiction (total score is calculated as the sum of the 19 items; Item 3 not incl (different format)\n"   
+
+    print "Questionnaire measures internet addiction (total score is calculated as the sum of the 19 items; Item 3 not incl (different format)\n"
     print df["IAT_sum"].describe()
     sns.distplot(df["IAT_sum"].dropna(), kde = True)
-    
+
     if out_dir:
-        df['ID'] = df['ID'].map(lambda x: str(x)[0:5])        
+        df['ID'] = df['ID'].map(lambda x: str(x)[0:5])
         df.rename(columns=dict(zip(cols, [x+1 for x in range(len(cols))])), inplace=True)
         cols_export = ['ID'] + [x+1 for x in range(len(cols))] + ["IAT_sum"]
         df[cols_export].to_csv('%s/internet_addiction.csv' % out_dir, index=False)
@@ -112,85 +146,85 @@ def run_IAT(df, out_dir=None):
 ##############################################################################
 
 def run_VIS(df, out_dir=None):
-    #items to be recoded                                
+    #items to be recoded
     items_recoded = ['AISaBASEQ[AIS7]',
-                     'AISbBASEQ[AIS15]']  
-    #recode items                 
+                     'AISbBASEQ[AIS15]']
+    #recode items
     recoder = {1: 6, 2: 5, 3: 4, 4: 3, 5: 2, 6: 1}
     for i in items_recoded:
-        df[i] = df[i].map(recoder).astype(float64)   
-           
+        df[i] = df[i].map(recoder).astype(float64)
+
     #Calculate subscales (Dialogic, Condensed, Otherpeople, Evaluative/Motivat.) - sumscores
-    #dialogic inner speech    
+    #dialogic inner speech
 
     print "Questionnaire measures 4 facets of inner speech: dialogic, condensed, other, evaluative"
 
-                       
+
     df['VIS_dialog_sum'] = df[['AISaBASEQ[AIS2]',
                            'AISaBASEQ[AIS6]',
                            'AISaBASEQ[AIS10]',
-                           'AISbBASEQ[AIS13]']].sum(axis=1)   
-                           
-    print '\n### dialogic inner speech ###' 
+                           'AISbBASEQ[AIS13]']].sum(axis=1)
+
+    print '\n### dialogic inner speech ###'
     print df['VIS_dialog_sum'].describe()
-     
+
     #condensed inner speech
     df['VIS_condensed_sum'] = df[['AISaBASEQ[AIS1]',
                               'AISaBASEQ[AIS7]',
                               'AISaBASEQ[AIS8]',
-                              'AISbBASEQ[AIS14]', 
+                              'AISbBASEQ[AIS14]',
                               'AISbBASEQ[AIS15]']].sum(axis=1)
-    
-    print '\n### condensed inner speech ###'                     
+
+    print '\n### condensed inner speech ###'
     print df['VIS_condensed_sum'].describe()
 
     #other people in inner speech
     df['VIS_other_sum'] = df[['AISaBASEQ[AIS3]',
                           'AISaBASEQ[AIS4]',
                           'AISaBASEQ[AIS5]',
-                          'AISbBASEQ[AIS12]', 
+                          'AISbBASEQ[AIS12]',
                           'AISbBASEQ[AIS16]']].sum(axis=1)
-                          
-    print '\n### others in inner speech ###'                      
+
+    print '\n### others in inner speech ###'
     print df['VIS_other_sum'].describe()
-    
-    
+
+
     #evaluative/motivational inner speech
     df['VIS_eval_sum'] = df[['AISaBASEQ[AIS9]',
                          'AISbBASEQ[AIS11]',
                          'AISbBASEQ[AIS17]',
-                         'AISbBASEQ[AIS18]']].sum(axis=1)  
-     
-    print '\n### evaluative inner speech ###'               
+                         'AISbBASEQ[AIS18]']].sum(axis=1)
+
+    print '\n### evaluative inner speech ###'
     print df['VIS_eval_sum'].describe()
 
-                    
+
     #create histograms of subscales
     plt.figure(figsize =(16,12))
-    
+
     plt.subplot(221)
     sns.distplot(df['VIS_dialog_sum'].dropna(), kde = True)
-    
+
     plt.subplot(222)
     sns.distplot(df['VIS_condensed_sum'].dropna(), kde = True)
-    
+
     plt.subplot(223)
     sns.distplot(df['VIS_other_sum'].dropna(), kde = True)
-    
+
     plt.subplot(224)
-    sns.distplot(df['VIS_eval_sum'].dropna(), kde = True) 
-    
+    sns.distplot(df['VIS_eval_sum'].dropna(), kde = True)
+
     if out_dir:
-        
+
         cols = ['AISaBASEQ[AIS1]', 'AISaBASEQ[AIS2]', 'AISaBASEQ[AIS3]', 'AISaBASEQ[AIS4]',
                 'AISaBASEQ[AIS5]', 'AISaBASEQ[AIS6]', 'AISaBASEQ[AIS7]', 'AISaBASEQ[AIS8]',
                 'AISaBASEQ[AIS9]', 'AISaBASEQ[AIS10]', 'AISbBASEQ[AIS11]', 'AISbBASEQ[AIS12]',
                 'AISbBASEQ[AIS13]', 'AISbBASEQ[AIS14]', 'AISbBASEQ[AIS15]', 'AISbBASEQ[AIS16]',
                 'AISbBASEQ[AIS17]', 'AISbBASEQ[AIS18]']
-            
-        df['ID'] = df['ID'].map(lambda x: str(x)[0:5])        
+
+        df['ID'] = df['ID'].map(lambda x: str(x)[0:5])
         df.rename(columns=dict(zip(cols, [x+1 for x in range(len(cols))])), inplace=True)
-        cols_export = ['ID'] + [x+1 for x in range(len(cols))] + ['VIS_dialog_sum', 'VIS_condensed_sum', 'VIS_other_sum', 'VIS_eval_sum'] 
+        cols_export = ['ID'] + [x+1 for x in range(len(cols))] + ['VIS_dialog_sum', 'VIS_condensed_sum', 'VIS_other_sum', 'VIS_eval_sum']
         df[cols_export].to_csv('%s/varieties_inner_speech.csv' % out_dir, index=False)
 
 
@@ -208,30 +242,30 @@ def run_MW_SD(df, out_dir=None):
                                        "MWBASEQ[MWS2]",
                                        "MWBASEQ[MWS3]",
                                        "MWBASEQ[MWS4]"]].mean(axis=1),3)
-    
-    
-    print "Questionnaire measures spont/delib MW (subscores are calculated by averaging)"   
+
+
+    print "Questionnaire measures spont/delib MW (subscores are calculated by averaging)"
     print '\n### MW deliberate ###'
-    print df['Mean_MW_delib_mean'].describe() 
+    print df['Mean_MW_delib_mean'].describe()
     print '\n### MW spontaneous ###'
     print df['Mean_MW_spont_mean'].describe()
-    
-    
+
+
    #create histos
     plt.figure(figsize =(16,12))
-    
+
     plt.subplot(221)
     sns.distplot(df['Mean_MW_delib_mean'].dropna(), kde = True)
-    
+
     plt.subplot(222)
     sns.distplot(df['Mean_MW_spont_mean'].dropna() , kde = True)
 
     if out_dir:
-        
+
         cols = ["MWBASEQ[MWD1]", "MWBASEQ[MWD2]", "MWBASEQ[MWD3]", "MWBASEQ[MWD4]",
                 "MWBASEQ[MWS1]", "MWBASEQ[MWS2]", "MWBASEQ[MWS3]", "MWBASEQ[MWS4]"]
-        
-        df['ID'] = df['ID'].map(lambda x: str(x)[0:5])        
+
+        df['ID'] = df['ID'].map(lambda x: str(x)[0:5])
         df.rename(columns=dict(zip(cols, [x+1 for x in range(len(cols))])), inplace=True)
         cols_export = ['ID'] + [x+1 for x in range(len(cols))] + ['Mean_MW_delib_mean', 'Mean_MW_spont_mean']
         df[cols_export].to_csv('%s/spontaneous_and_deliberate_mind_wandering.csv' % out_dir, index=False)
@@ -243,17 +277,17 @@ def run_MW_SD(df, out_dir=None):
 ##############################################################################
 
 def run_SDT(df, out_dir=None):
-    #items to be recoded                                
+    #items to be recoded
     items_recoded = ['SDTnBASEQ[SDTN2r]',
                      'SDTnBASEQ[SDTN6r]',
                      'SDTnBASEQ[SDTN8r]',
                      'SDTpBASEQ[SDTP2r]',
-                     'SDTpBASEQ[SDTP7r]']             
-                                                      
-    #recode items                 
+                     'SDTpBASEQ[SDTP7r]']
+
+    #recode items
     recoder = {1: 5, 2: 4, 4: 2, 5: 1 }
     for i in items_recoded:
-        df[i] = df[i].map(recoder).astype(float64)   
+        df[i] = df[i].map(recoder).astype(float64)
 
     #Calculate total score as the sum of Item 1-9 for Machiavellism.
     print 'Questionnaire measures dark triad (Machiavellism, Narcissism, Psychopathy). Scores are sumscores'
@@ -267,11 +301,11 @@ def run_SDT(df, out_dir=None):
                      'SDTmBASEQ[SDTM7]',
                      'SDTmBASEQ[SDTM8]',
                      'SDTmBASEQ[SDTM9]']].sum(axis=1)
-        
+
     print '\n### Machiavellism ###'
     print df['Mach_sum'].describe()
-    
-    #Calculate total score as the sum of Item 1-9 for Narcissism.               
+
+    #Calculate total score as the sum of Item 1-9 for Narcissism.
     df['Narc_sum'] = df[['SDTnBASEQ[SDTN1]',
                       'SDTnBASEQ[SDTN2r]',
                       'SDTnBASEQ[SDTN3]',
@@ -281,11 +315,11 @@ def run_SDT(df, out_dir=None):
                       'SDTnBASEQ[SDTN7]',
                       'SDTnBASEQ[SDTN8r]',
                       'SDTnBASEQ[SDTN9]']].sum(axis=1)
-                      
+
     print '\n### Narcissism ###'
     print df['Narc_sum'].describe()
-        
-   #Calculate total score as the sum of Item 1-9 for Psychopathy.                      
+
+   #Calculate total score as the sum of Item 1-9 for Psychopathy.
     df['Psycho_sum'] = df[['SDTpBASEQ[SDTP1]',
                        'SDTpBASEQ[SDTP2r]',
                        'SDTpBASEQ[SDTP3]',
@@ -295,25 +329,25 @@ def run_SDT(df, out_dir=None):
                        'SDTpBASEQ[SDTP7r]',
                        'SDTpBASEQ[SDTP8]',
                        'SDTpBASEQ[SDTP9]']].sum(axis=1)
-                       
+
     print '\n### Psychopathy ###'
     print df['Psycho_sum'].describe()
-    
-    
+
+
     #create histo
     plt.figure(figsize =(16,12))
-    
+
     plt.subplot(241)
     sns.distplot(df['Mach_sum'].dropna(), kde = True)
-  
+
     plt.subplot(242)
-    sns.distplot(df['Narc_sum'].dropna(), kde = True) 
-  
+    sns.distplot(df['Narc_sum'].dropna(), kde = True)
+
     plt.subplot(243)
     sns.distplot(df['Psycho_sum'].dropna(), kde = True)
-    
+
     if out_dir:
-        
+
         cols = ['SDTmBASEQ[SDTM1]', 'SDTmBASEQ[SDTM2]', 'SDTmBASEQ[SDTM3]', 'SDTmBASEQ[SDTM4]',
                 'SDTmBASEQ[SDTM5]', 'SDTmBASEQ[SDTM6]', 'SDTmBASEQ[SDTM7]', 'SDTmBASEQ[SDTM8]',
                 'SDTmBASEQ[SDTM9]','SDTnBASEQ[SDTN1]', 'SDTnBASEQ[SDTN2r]', 'SDTnBASEQ[SDTN3]',
@@ -321,10 +355,10 @@ def run_SDT(df, out_dir=None):
                 'SDTnBASEQ[SDTN8r]', 'SDTnBASEQ[SDTN9]', 'SDTpBASEQ[SDTP1]', 'SDTpBASEQ[SDTP2r]',
                 'SDTpBASEQ[SDTP3]', 'SDTpBASEQ[SDTP4]', 'SDTpBASEQ[SDTP5]', 'SDTpBASEQ[SDTP6]',
                 'SDTpBASEQ[SDTP7r]', 'SDTpBASEQ[SDTP8]', 'SDTpBASEQ[SDTP9]']
-        
-        df['ID'] = df['ID'].map(lambda x: str(x)[0:5])        
+
+        df['ID'] = df['ID'].map(lambda x: str(x)[0:5])
         df.rename(columns=dict(zip(cols, [x+1 for x in range(len(cols))])), inplace=True)
-        cols_export = ['ID'] + [x+1 for x in range(len(cols))] + ['Mach_sum', 'Narc_sum', 'Psycho_sum']    
+        cols_export = ['ID'] + [x+1 for x in range(len(cols))] + ['Mach_sum', 'Narc_sum', 'Psycho_sum']
         df[cols_export].to_csv('%s/short_dark_triad.csv' % out_dir, index=False)
 
 
@@ -336,23 +370,23 @@ def run_SDT(df, out_dir=None):
 # social desirability
 
 def run_SES(df, out_dir=None):
-    #items to be recoded     
+    #items to be recoded
 
     print 'Questionnaire measure social des. as the sum of 17 items\n'
 
-                           
+
     items_recoded = ['SESaBASEQ[SES1r]',
                      'SESaBASEQ[SES4r]',
                      'SESaBASEQ[SES6r]',
                      'SESaBASEQ[SES7r]',
                      'SESbBASEQ[SES11r]',
                      'SESbBASEQ[SES15r]',
-                     'SESbBASEQ[SES17r]']    
-                             
-    #recode items                 
+                     'SESbBASEQ[SES17r]']
+
+    #recode items
     recoder = {1: 2 , 2: 1}
     for i in items_recoded:
-        df[i] = df[i].map(recoder).astype(float64)   
+        df[i] = df[i].map(recoder).astype(float64)
 
     cols = ['SESaBASEQ[SES1r]',
             'SESaBASEQ[SES2]',
@@ -370,33 +404,33 @@ def run_SES(df, out_dir=None):
             'SESbBASEQ[SES14]',
             'SESbBASEQ[SES15r]',
             'SESbBASEQ[SES16]',
-            'SESbBASEQ[SES17r]']     
+            'SESbBASEQ[SES17r]']
 
     #Calculate total score as the sum of Item 1-17.
     df['SDS_sum'] = df[cols].sum(axis=1)
-                    
+
     print df['SDS_sum'].describe()
-                   
+
     #create histo
-    sns.distplot(df['SDS_sum'].dropna(), kde = True)              
-    
+    sns.distplot(df['SDS_sum'].dropna(), kde = True)
+
     if out_dir:
-    
-        df['ID'] = df['ID'].map(lambda x: str(x)[0:5])        
+
+        df['ID'] = df['ID'].map(lambda x: str(x)[0:5])
         df.rename(columns=dict(zip(cols, [x+1 for x in range(len(cols))])), inplace=True)
-        cols_export = ['ID'] + [x+1 for x in range(len(cols))] + ['SDS_sum']      
+        cols_export = ['ID'] + [x+1 for x in range(len(cols))] + ['SDS_sum']
         df[cols_export].to_csv('%s/social_desirability.csv' % out_dir, index=False)
-  
 
 
-##############################################################################            
+
+##############################################################################
 ##################### UPPSP - impulsivity ####################################
 ##############################################################################
 
 def run_UPPSP(df, out_dir=None):
-    
-    print 'Questionnaire measures facets of impuls.: NegUrg, LoPremed, LoPersev, SS, PosUrg (scores are averaged)\n'    
-    
+
+    print 'Questionnaire measures facets of impuls.: NegUrg, LoPremed, LoPersev, SS, PosUrg (scores are averaged)\n'
+
     #items that need to be recoded
     items_recoded = ['UPPSaBASEQ[UPP2r]','UPPSaBASEQ[UPP3r]','UPPSaBASEQ[UPP5r]',
                      'UPPSaBASEQ[UPP7r]','UPPSaBASEQ[UPP8r]','UPPSaBASEQ[UPP9r]',
@@ -411,7 +445,7 @@ def run_UPPSP(df, out_dir=None):
                      'UPPSeBASEQ[UPP49]','UPPSeBASEQ[UPP50r]','UPPSfBASEQ[UPP51r]',
                      'UPPSfBASEQ[UPP52r]','UPPSfBASEQ[UPP54]','UPPSfBASEQ[UPP56r]',
                      'UPPSfBASEQ[UPP57r]','UPPSfBASEQ[UPP58r]','UPPSfBASEQ[UPP59r]']
-    #recode items                 
+    #recode items
     recoder = {1: 4, 2: 3, 3: 2, 4: 1}
     for i in items_recoded:
         df[i] = df[i].map(recoder).astype(float64)
@@ -424,15 +458,15 @@ def run_UPPSP(df, out_dir=None):
                                      'UPPScBASEQ[UPP22r]',
                                      'UPPScBASEQ[UPP29r]',
                                      'UPPSdBASEQ[UPP34r]',
-                                     'UPPSdBASEQ[UPP39r]',  
+                                     'UPPSdBASEQ[UPP39r]',
                                      'UPPSeBASEQ[UPP44r]',
                                      'UPPSeBASEQ[UPP50r]',
                                      'UPPSfBASEQ[UPP53r]',
-                                     'UPPSfBASEQ[UPP58r]']].mean(axis=1),3)                                     
-    print '\n### Negative Urgency ###'                                 
+                                     'UPPSfBASEQ[UPP58r]']].mean(axis=1),3)
+    print '\n### Negative Urgency ###'
     print df['Mean_NegUrg'].describe()
-                          
-    #lack of premeditation                              
+
+    #lack of premeditation
     df['Mean_Premed'] = np.round(df[['UPPSaBASEQ[UPP1]',
                                      'UPPSaBASEQ[UPP6]',
                                      'UPPSbBASEQ[UPP11]',
@@ -443,10 +477,10 @@ def run_UPPSP(df, out_dir=None):
                                      'UPPSdBASEQ[UPP38]',
                                      'UPPSeBASEQ[UPP43]',
                                      'UPPSeBASEQ[UPP48]',
-                                     'UPPSfBASEQ[UPP55r]']].mean(axis=1),3)                                     
+                                     'UPPSfBASEQ[UPP55r]']].mean(axis=1),3)
     print '\n### Lack of Premed ###'
-    print df['Mean_Premed'].describe()    
-                                                        
+    print df['Mean_Premed'].describe()
+
     #lack of perseverance
     df['Mean_Persev'] = np.round(df[['UPPSaBASEQ[UPP4]',
                                      'UPPSaBASEQ[UPP9r]',
@@ -457,10 +491,10 @@ def run_UPPSP(df, out_dir=None):
                                      'UPPSdBASEQ[UPP32]',
                                      'UPPSdBASEQ[UPP37]',
                                      'UPPSeBASEQ[UPP42]',
-                                     'UPPSeBASEQ[UPP47r]']].mean(axis=1),3)                                     
+                                     'UPPSeBASEQ[UPP47r]']].mean(axis=1),3)
     print '\n### Lack of Persev ###'
-    print df['Mean_Persev'].describe()                                                                  
-              
+    print df['Mean_Persev'].describe()
+
     #sensation seeking
     df['Mean_SS'] = np.round(df[['UPPSaBASEQ[UPP3r]',
                                  'UPPSaBASEQ[UPP8r]',
@@ -473,10 +507,10 @@ def run_UPPSP(df, out_dir=None):
                                  'UPPSeBASEQ[UPP41r]',
                                  'UPPSeBASEQ[UPP46r]',
                                  'UPPSfBASEQ[UPP51r]',
-                                 'UPPSfBASEQ[UPP56r]']].mean(axis=1),3)                                 
-    print '\n### SS ###'                              
+                                 'UPPSfBASEQ[UPP56r]']].mean(axis=1),3)
+    print '\n### SS ###'
     print df['Mean_SS'].describe()
-                       
+
     #Positive Urgency
     df['Mean_PosUrg'] = np.round(df[['UPPSaBASEQ[UPP5r]',
                                      'UPPSaBASEQ[UPP10r]',
@@ -492,33 +526,33 @@ def run_UPPSP(df, out_dir=None):
                                      'UPPSfBASEQ[UPP54]',
                                      'UPPSfBASEQ[UPP57r]',
                                      'UPPSfBASEQ[UPP59r]']].mean(axis=1),3)
-        
-    print '\n### Positive Urgency ###'                              
+
+    print '\n### Positive Urgency ###'
     print df['Mean_PosUrg'].describe()
-   
-                                     
+
+
 
     #create histograms of subscales
     plt.figure(figsize =(16,12))
-    
+
     plt.subplot(231)
-    sns.distplot(df['Mean_NegUrg'].dropna(), kde = True) 
-    
+    sns.distplot(df['Mean_NegUrg'].dropna(), kde = True)
+
     plt.subplot(232)
-    sns.distplot(df['Mean_Premed'].dropna(), kde = True) 
-    
+    sns.distplot(df['Mean_Premed'].dropna(), kde = True)
+
     plt.subplot(233)
-    sns.distplot(df['Mean_Persev'].dropna(), kde = True) 
-   
+    sns.distplot(df['Mean_Persev'].dropna(), kde = True)
+
     plt.subplot(234)
-    sns.distplot(df['Mean_SS'].dropna(), kde = True) 
-    
+    sns.distplot(df['Mean_SS'].dropna(), kde = True)
+
     plt.subplot(235)
-    sns.distplot(df['Mean_PosUrg'].dropna(), kde = True)   
-            
+    sns.distplot(df['Mean_PosUrg'].dropna(), kde = True)
+
     if out_dir:
-   
-        
+
+
         cols = ['UPPSaBASEQ[UPP1]', 'UPPSaBASEQ[UPP2r]', 'UPPSaBASEQ[UPP3r]', 'UPPSaBASEQ[UPP4]',
                 'UPPSaBASEQ[UPP5r]', 'UPPSaBASEQ[UPP6]', 'UPPSaBASEQ[UPP7r]', 'UPPSaBASEQ[UPP8r]',
                 'UPPSaBASEQ[UPP9r]', 'UPPSaBASEQ[UPP10r]', 'UPPSbBASEQ[UPP11]', 'UPPSbBASEQ[UPP12r]',
@@ -533,13 +567,13 @@ def run_UPPSP(df, out_dir=None):
                 'UPPSeBASEQ[UPP45r]', 'UPPSeBASEQ[UPP46r]', 'UPPSeBASEQ[UPP47r]', 'UPPSeBASEQ[UPP48]',
                 'UPPSeBASEQ[UPP49]', 'UPPSeBASEQ[UPP50r]', 'UPPSfBASEQ[UPP51r]', 'UPPSfBASEQ[UPP52r]',
                 'UPPSfBASEQ[UPP53r]', 'UPPSfBASEQ[UPP54]', 'UPPSfBASEQ[UPP55r]', 'UPPSfBASEQ[UPP56r]',
-                'UPPSfBASEQ[UPP57r]', 'UPPSfBASEQ[UPP58r]','UPPSfBASEQ[UPP59r]']        
-        
-        df['ID'] = df['ID'].map(lambda x: str(x)[0:5])        
+                'UPPSfBASEQ[UPP57r]', 'UPPSfBASEQ[UPP58r]','UPPSfBASEQ[UPP59r]']
+
+        df['ID'] = df['ID'].map(lambda x: str(x)[0:5])
         df.rename(columns=dict(zip(cols, [x+1 for x in range(len(cols))])), inplace=True)
-        cols_export = ['ID'] + [x+1 for x in range(len(cols))] + ['Mean_NegUrg', 'Mean_Premed', 'Mean_Persev', 'Mean_SS','Mean_PosUrg']       
+        cols_export = ['ID'] + [x+1 for x in range(len(cols))] + ['Mean_NegUrg', 'Mean_Premed', 'Mean_Persev', 'Mean_SS','Mean_PosUrg']
         df[cols_export].to_csv('%s/UPPSP_impulsivity.csv' % out_dir, index=False)
-  
+
 
 
 ##############################################################################
@@ -548,19 +582,19 @@ def run_UPPSP(df, out_dir=None):
 ##############################################################################
 
 def run_TPS(df, out_dir=None):
-    #items to be recoded    
+    #items to be recoded
 
     print 'Questionnaire measures procrastination as the sum of 16 items\n'
-                            
+
     items_recoded = ['TPSBASEQ[TPS7]',
                      'TPSBASEQ[TPS12]',
                      'TPSBASEQ[TPS14]',
-                     'TPSBASEQ[TPS16]']    
-                             
-    #recode items                 
+                     'TPSBASEQ[TPS16]']
+
+    #recode items
     recoder = {1: 5, 2: 4, 4: 2, 5: 1 }
     for i in items_recoded:
-        df[i] = df[i].map(recoder).astype(float64)   
+        df[i] = df[i].map(recoder).astype(float64)
 
     #Calculate total score as the sum of Item 1-16.
     cols = ['TPSBASEQ[TPS1]',
@@ -579,19 +613,19 @@ def run_TPS(df, out_dir=None):
             'TPSBASEQ[TPS14]',
             'TPSBASEQ[TPS15]',
             'TPSBASEQ[TPS16]']
-    
+
     df['TPS_D_sum'] = df[cols].sum(axis=1)
-                      
+
     print df['TPS_D_sum'].describe()
-    sns.distplot(df['TPS_D_sum'].dropna(), kde = True)                  
+    sns.distplot(df['TPS_D_sum'].dropna(), kde = True)
 
     if out_dir:
-        
-        df['ID'] = df['ID'].map(lambda x: str(x)[0:5])        
+
+        df['ID'] = df['ID'].map(lambda x: str(x)[0:5])
         df.rename(columns=dict(zip(cols, [x+1 for x in range(len(cols))])), inplace=True)
-        cols_export = ['ID'] + [x+1 for x in range(len(cols))] + ['TPS_D_sum']        
+        cols_export = ['ID'] + [x+1 for x in range(len(cols))] + ['TPS_D_sum']
         df[cols_export].to_csv('%s/tuckmann_procrastination.csv' % out_dir, index=False)
-  
+
 
 
 ##############################################################################
@@ -600,28 +634,28 @@ def run_TPS(df, out_dir=None):
 
 def run_ASR(df, out_dir=None):
     ######################## adaptive functioning #################################
-    print 'The Adult Self-Report (ASR; part of the Achenbach System of Empirically Based Assessment)\n' 
+    print 'The Adult Self-Report (ASR; part of the Achenbach System of Empirically Based Assessment)\n'
     print 'Adaptive Functioning Scales: \nFriends; Spouse/Partner; Family; Job; Education, Personal Strengths\n'
-    print 'Substance Use Scales: \nTobacco, Alcohol, Drugs, mean substance use\n'     
+    print 'Substance Use Scales: \nTobacco, Alcohol, Drugs, mean substance use\n'
     print 'Syndrome Scales (123 items on a 3-point scale):'
-    print 'Anxious/Depressed; Withdrawn; Somatic Complaints (together form the Internalizing scale)' 
+    print 'Anxious/Depressed; Withdrawn; Somatic Complaints (together form the Internalizing scale)'
     print 'Aggressive Behavior; Rule-breaking Behavior, and Intrusive (form the Externalzing scale)'
-    print 'Thought Problems; Attention Problems' 
-   
+    print 'Thought Problems; Attention Problems'
+
     print '\n\n', '##### Adaptive Functioning #####'
-    
-    ##### friends #####     
+
+    ##### friends #####
     df['ASR_summary_adaptiveFunctioning_friends_sum' ] = df[['ASRIABASEQ[ASRIA]',
                                                                  'ASRIBBASEQ[ASRIB]',
                                                                  'ASRICBASEQ[ASRIC]',
                                                                  'ASRIDBASEQ[ASRID]']].sum(axis=1)
-    
-    
+
+
     ##### spouse / partner #####
     recoded = ['ASRII3BASEQ[ASRIIBr]', 'ASRII3BASEQ[ASRIIEr]', 'ASRII3BASEQ[ASRIIFr]', 'ASRII3BASEQ[ASRIIHr]']
     for item in recoded:
         df[item] = -df[item]
-    df['ASR_summary_adaptiveFunctioning_spouse_sum'] = df[['ASRII3BASEQ[ASRIIA]', 
+    df['ASR_summary_adaptiveFunctioning_spouse_sum'] = df[['ASRII3BASEQ[ASRIIA]',
                                                               'ASRII3BASEQ[ASRIIBr]',
                                                               'ASRII3BASEQ[ASRIIC]',
                                                               'ASRII3BASEQ[ASRIID]',
@@ -629,7 +663,7 @@ def run_ASR(df, out_dir=None):
                                                               'ASRII3BASEQ[ASRIIFr]',
                                                               'ASRII3BASEQ[ASRIIG]',
                                                               'ASRII3BASEQ[ASRIIHr]']].sum(axis=1)
-    
+
     ##### family #####
     # also in literature: 'ASR_summary_adaptiveFunctioning_family_mean'
     items = ['ASRIIIABASEQ[ASRIIIA]', 'ASRIIIBBASEQ[ASRIIIB]', 'ASRIIICBASEQ[ASRIIIC]',
@@ -645,8 +679,8 @@ def run_ASR(df, out_dir=None):
             except:
                 pass
         df['ASR_summary_adaptiveFunctioning_family_sum'].iloc[[sub]] = float(score)
-    
-    
+
+
     ##### job #####
     #satisfied_job = df['ASRIVbBASEQ[ASRIVE]'] is not scored
     recoded = ['ASRIVbBASEQ[ASRIVBr]', 'ASRIVbBASEQ[ASRIVDr]', 'ASRIVbBASEQ[ASRIVFr]',
@@ -661,7 +695,7 @@ def run_ASR(df, out_dir=None):
                                                             'ASRIVbBASEQ[ASRIVGr]',
                                                             'ASRIVbBASEQ[ASRIVHr]',
                                                             'ASRIVbBASEQ[ASRIVIr]']].sum(axis=1)
-    
+
     ##### education #####
     # careful with older ages
     # though we're using raw total scores, it's important to notice that normed scores only available for ages 18-29
@@ -673,46 +707,46 @@ def run_ASR(df, out_dir=None):
                                                                   'ASRVcBASEQ[ASRVCr]',
                                                                   'ASRVcBASEQ[ASRVD]',
                                                                   'ASRVcBASEQ[ASRVEr]']].sum(axis=1)
-    
-    
+
+
     scales = ['ASR_summary_adaptiveFunctioning_friends_sum',
-              'ASR_summary_adaptiveFunctioning_spouse_sum', 
+              'ASR_summary_adaptiveFunctioning_spouse_sum',
               'ASR_summary_adaptiveFunctioning_family_sum',
               'ASR_summary_adaptiveFunctioning_job_sum',
               'ASR_summary_adaptiveFunctioning_education_sum']
-    
-        
-   
+
+
+
     for scale in scales:
         print '\n'
         print df[scale].describe()
         sns.countplot(df[scale].dropna(), order=range(int(df[scale].min()),int(df[scale].max())))
         plt.xlabel(scale, fontsize=14)
         plt.show()
-        
-        
-        
-    
+
+
+
+
     ######################## substance use #################################
-    
+
     print '\n\n\n', '##### Substance Use #####'
-    
+
     df['ASR_scale_substanceUse_tabaco_perday'] = df['ASRQ124']
     df['ASR_scale_substanceUse_alcohol_daysdrunk'] = df['ASRQ125']
     df['ASR_scale_substanceUse_drugs_daysused'] = df['ASRQ126']
-    
-    substance_scales = ['ASR_scale_substanceUse_tabaco_perday', 
-                        'ASR_scale_substanceUse_alcohol_daysdrunk', 
+
+    substance_scales = ['ASR_scale_substanceUse_tabaco_perday',
+                        'ASR_scale_substanceUse_alcohol_daysdrunk',
                         'ASR_scale_substanceUse_drugs_daysused']
-    
+
     for scale in substance_scales:
         print '\n'
-        print df[scale].describe() 
+        print df[scale].describe()
         sns.countplot(df[scale].dropna(), order=range(int(df[scale].min()),int(df[scale].max())))
         plt.xlabel(scale, fontsize=14)
         plt.show()
-    
-    
+
+
     ######################### items #############################################
     Q1 = df['ASRQ1BASEQ[ASRQ1]']
     Q2 = df['ASRQ1BASEQ[ASRQ2]']
@@ -843,64 +877,64 @@ def run_ASR(df, out_dir=None):
     Q121 = df['ASRQ121BASEQ[ASRQ121]']
     Q122 = df['ASRQ121BASEQ[ASRQ122]']
     Q123 = df['ASRQ121BASEQ[ASRQ123]']
-    
-    
+
+
     ######################## critical items #################################
-    
+
     print '\n\n\n', '##### Critical Items #####'
     df['ASR_summary_criticalItems_sum'] = Q6 + Q8 + Q9 + Q10 + Q14 + Q16 + Q18 + Q21 + Q40 + Q55 + Q57 + Q66 + Q70 + Q84 + Q90 + Q91 + Q92 + Q97 + Q103
     print '\n\n', 'ASR_summary_criticalItems_sum', '\n'
     print df['ASR_summary_criticalItems_sum'].describe()
     sns.countplot(df['ASR_summary_criticalItems_sum'].dropna(), order=range(int(df['ASR_summary_criticalItems_sum'].min()),int(df['ASR_summary_criticalItems_sum'].max())))
     plt.show()
-    
-    
+
+
     ######################## syndrome profiles #################################
-    
+
     print '\n\n\n', '##### Syndrome Profiles #####'
-    
-    df['ASR_summary_syndromeProfiles_anxiousdepressed_sum'] = Q12 + Q13 + Q14 + Q22 + Q31 + Q33 + Q34 + Q35 + Q45 + Q47 + Q50 + Q52 + Q71 + Q91 + Q103 + Q107 + Q112 + Q113 
+
+    df['ASR_summary_syndromeProfiles_anxiousdepressed_sum'] = Q12 + Q13 + Q14 + Q22 + Q31 + Q33 + Q34 + Q35 + Q45 + Q47 + Q50 + Q52 + Q71 + Q91 + Q103 + Q107 + Q112 + Q113
     df['ASR_summary_syndromeProfiles_withdrawn_sum'] = Q25 + Q30 + Q42 + Q48 + Q60 + Q65 + Q67 + Q69 + Q111
     df['ASR_summary_syndromeProfiles_somaticComplaints_sum'] = Q51 + Q54 + Q56a + Q56b + Q56c + Q56d + Q56e + Q56f + Q56g + Q100
-    df['ASR_summary_syndromeProfiles_thoughtProblems_sum'] = Q9 + Q18 + Q36 + Q40 + Q46 + Q63 + Q66 + Q70 + Q84 + Q85 
+    df['ASR_summary_syndromeProfiles_thoughtProblems_sum'] = Q9 + Q18 + Q36 + Q40 + Q46 + Q63 + Q66 + Q70 + Q84 + Q85
     df['ASR_summary_syndromeProfiles_attentionProblems_sum'] = Q1 + Q8 + Q11 + Q17 + Q53 + Q59 + Q61 + Q64 + Q78 + Q101 + Q102 + Q105 + Q108 + Q119 + Q121
     df['ASR_summary_syndromeProfiles_aggressiveBehavior_sum'] = Q3 + Q5 + Q16 + Q28 + Q37 + Q55 + Q57 + Q68 + Q81 + Q86 + Q87 + Q95 + Q97 + Q116 + Q118
-    df['ASR_summary_syndromeProfiles_rulebreakingBehavior_sum'] = Q6 + Q20 + Q23 + Q26 + Q39 + Q41 + Q43 + Q76 + Q82 + Q90 + Q92 + Q114 + Q117 + Q122 
+    df['ASR_summary_syndromeProfiles_rulebreakingBehavior_sum'] = Q6 + Q20 + Q23 + Q26 + Q39 + Q41 + Q43 + Q76 + Q82 + Q90 + Q92 + Q114 + Q117 + Q122
     df['ASR_summary_syndromeProfiles_intrusive_sum'] = Q7 + Q19 + Q74 + Q93 + Q94 + Q104
-    
+
     df['ASR_summary_syndromeProfiles_internalizing_sum'] = df[['ASR_summary_syndromeProfiles_anxiousdepressed_sum',
-                                                                   'ASR_summary_syndromeProfiles_withdrawn_sum', 
+                                                                   'ASR_summary_syndromeProfiles_withdrawn_sum',
                                                                    'ASR_summary_syndromeProfiles_somaticComplaints_sum']].sum(axis=1)
-    
+
     df['ASR_summary_syndromeProfiles_externalizing_sum'] = df[['ASR_summary_syndromeProfiles_aggressiveBehavior_sum',
                                                                    'ASR_summary_syndromeProfiles_rulebreakingBehavior_sum',
                                                                    'ASR_summary_syndromeProfiles_intrusive_sum']].sum(axis=1)
-    
-    
-    syndrome_scales = ['ASR_summary_syndromeProfiles_anxiousdepressed_sum', 
-                       'ASR_summary_syndromeProfiles_withdrawn_sum', 
+
+
+    syndrome_scales = ['ASR_summary_syndromeProfiles_anxiousdepressed_sum',
+                       'ASR_summary_syndromeProfiles_withdrawn_sum',
                        'ASR_summary_syndromeProfiles_somaticComplaints_sum',
-                       'ASR_summary_syndromeProfiles_thoughtProblems_sum', 
-                       'ASR_summary_syndromeProfiles_attentionProblems_sum', 
-                       'ASR_summary_syndromeProfiles_aggressiveBehavior_sum', 
-                       'ASR_summary_syndromeProfiles_rulebreakingBehavior_sum', 
-                       'ASR_summary_syndromeProfiles_intrusive_sum', 
-                       'ASR_summary_syndromeProfiles_internalizing_sum', 
+                       'ASR_summary_syndromeProfiles_thoughtProblems_sum',
+                       'ASR_summary_syndromeProfiles_attentionProblems_sum',
+                       'ASR_summary_syndromeProfiles_aggressiveBehavior_sum',
+                       'ASR_summary_syndromeProfiles_rulebreakingBehavior_sum',
+                       'ASR_summary_syndromeProfiles_intrusive_sum',
+                       'ASR_summary_syndromeProfiles_internalizing_sum',
                        'ASR_summary_syndromeProfiles_externalizing_sum']
-    
+
     for scale in syndrome_scales:
         print '\n\n', scale, '\n'
-        print df[scale].describe()  
+        print df[scale].describe()
         sns.countplot(df[scale].dropna(), order=range(int(df[scale].min()),int(df[scale].max())))
         plt.xlabel(scale, fontsize=14)
         plt.show()
-    
+
     print '\n\n'
     sns.lmplot(x='ASR_summary_syndromeProfiles_externalizing_sum', y='ASR_summary_syndromeProfiles_internalizing_sum', data=df)
 
 
     if out_dir:
-        
+
         d = {'ASQQ79Freitext': '98',
              'ASR100Freitext': '122',
              'ASR92Freitext': '121',
@@ -1101,68 +1135,68 @@ def run_ASR(df, out_dir=None):
              'ASRVcBASEQ[ASRVCr]': '5.K',
              'ASRVcBASEQ[ASRVD]': '5.L',
              'ASRVcBASEQ[ASRVEr]': '5.M'}
-        
-        df['ID'] = df['ID'].map(lambda x: str(x)[0:5])        
+
+        df['ID'] = df['ID'].map(lambda x: str(x)[0:5])
         df.rename(columns=d, inplace=True)
         cols_export = ['ID'] + list(sort(d.values())) + ['ASR_summary_adaptiveFunctioning_friends_sum','ASR_summary_adaptiveFunctioning_spouse_sum',
                                                     'ASR_summary_adaptiveFunctioning_family_sum', 'ASR_summary_adaptiveFunctioning_family_sum',
                                                     'ASR_summary_adaptiveFunctioning_job_sum', 'ASR_summary_adaptiveFunctioning_education_sum',
-                                                    'ASR_scale_substanceUse_tabaco_perday','ASR_scale_substanceUse_alcohol_daysdrunk', 
-                                                    'ASR_scale_substanceUse_drugs_daysused','ASR_summary_criticalItems_sum', 
-                                                    'ASR_summary_syndromeProfiles_anxiousdepressed_sum', 
-                                                    'ASR_summary_syndromeProfiles_withdrawn_sum', 
+                                                    'ASR_scale_substanceUse_tabaco_perday','ASR_scale_substanceUse_alcohol_daysdrunk',
+                                                    'ASR_scale_substanceUse_drugs_daysused','ASR_summary_criticalItems_sum',
+                                                    'ASR_summary_syndromeProfiles_anxiousdepressed_sum',
+                                                    'ASR_summary_syndromeProfiles_withdrawn_sum',
                                                     'ASR_summary_syndromeProfiles_somaticComplaints_sum',
-                                                    'ASR_summary_syndromeProfiles_thoughtProblems_sum', 
-                                                    'ASR_summary_syndromeProfiles_attentionProblems_sum', 
-                                                    'ASR_summary_syndromeProfiles_aggressiveBehavior_sum', 
-                                                    'ASR_summary_syndromeProfiles_rulebreakingBehavior_sum', 
-                                                    'ASR_summary_syndromeProfiles_intrusive_sum', 
-                                                    'ASR_summary_syndromeProfiles_internalizing_sum', 
-                                                    'ASR_summary_syndromeProfiles_externalizing_sum']        
+                                                    'ASR_summary_syndromeProfiles_thoughtProblems_sum',
+                                                    'ASR_summary_syndromeProfiles_attentionProblems_sum',
+                                                    'ASR_summary_syndromeProfiles_aggressiveBehavior_sum',
+                                                    'ASR_summary_syndromeProfiles_rulebreakingBehavior_sum',
+                                                    'ASR_summary_syndromeProfiles_intrusive_sum',
+                                                    'ASR_summary_syndromeProfiles_internalizing_sum',
+                                                    'ASR_summary_syndromeProfiles_externalizing_sum']
         df[cols_export].to_csv('%s/adult_self_report.csv' % out_dir, index=False)
-  
+
 
 
 ##############################################################################
-########################## Self-Esteem Scale ################################# 
+########################## Self-Esteem Scale #################################
 ##############################################################################
 
 def run_SelfEst(df, out_dir=None):
-    
-    
-    print "Questionnaire measure self-esteem as the mean of 8 items\n"    
-    
+
+
+    print "Questionnaire measure self-esteem as the mean of 8 items\n"
+
     #items to be recoded
     items_recoded = ['SEBASEQ[SE5r]',
                      'SEBASEQ[SE6r]',
                      'SEBASEQ[SE7r]',
-                     'SEBASEQ[SE8r]'] 
-    
-    recoder = {1: 5, 2: 4, 4: 2, 5: 1}     
+                     'SEBASEQ[SE8r]']
+
+    recoder = {1: 5, 2: 4, 4: 2, 5: 1}
     for i in items_recoded:
-        df[i] = df[i].map(recoder).astype(float64) 
-    
+        df[i] = df[i].map(recoder).astype(float64)
+
     #scale aggregation
     cols = ['SEBASEQ[SE1]',
             'SEBASEQ[SE2]',
             'SEBASEQ[SE3]',
             'SEBASEQ[SE4]',
-            'SEBASEQ[SE5r]', 
+            'SEBASEQ[SE5r]',
             'SEBASEQ[SE6r]',
             'SEBASEQ[SE7r]',
             'SEBASEQ[SE8r]']
-    
-    df['Mean_SelfEst'] = np.round(df[cols].mean(axis=1),3) 
-                                      
+
+    df['Mean_SelfEst'] = np.round(df[cols].mean(axis=1),3)
+
     print df['Mean_SelfEst'].describe()
-    sns.distplot(df['Mean_SelfEst'].dropna(), kde = True)                                  
+    sns.distplot(df['Mean_SelfEst'].dropna(), kde = True)
 
     if out_dir:
-        df['ID'] = df['ID'].map(lambda x: str(x)[0:5])        
+        df['ID'] = df['ID'].map(lambda x: str(x)[0:5])
         df.rename(columns=dict(zip(cols, [x+1 for x in range(len(cols))])), inplace=True)
-        cols_export = ['ID'] + [x+1 for x in range(len(cols))] + ['Mean_SelfEst']          
+        cols_export = ['ID'] + [x+1 for x in range(len(cols))] + ['Mean_SelfEst']
         df[cols_export].to_csv('%s/self_esteem.csv' % out_dir, index=False)
-  
+
 
 
 ##############################################################################
@@ -1171,7 +1205,7 @@ def run_SelfEst(df, out_dir=None):
 
 def run_IMIS(df, out_dir=None):
 
-    ### Additional questions about the frequency of episodes, the length of the music loop in one's head ( Sec Length) 
+    ### Additional questions about the frequency of episodes, the length of the music loop in one's head ( Sec Length)
     ### and the length of INMI episode (Epi Length)
 
     print 'Involuntary Musical Imagery Scale (IMIS) \n\n'
@@ -1183,8 +1217,8 @@ def run_IMIS(df, out_dir=None):
 
 
     print 'All subsequent reported scores are for participants who reported experiencing INMI'
-    print ' (answer to the frequency question different from "never" = 1) \n\n' 
-    
+    print ' (answer to the frequency question different from "never" = 1) \n\n'
+
     print 'Section length (length of music loop experienced as INMI)'
     print df["EWSdBASEQ[AQ2]"].describe()
     print '\n'
@@ -1193,16 +1227,16 @@ def run_IMIS(df, out_dir=None):
     print df["EWSeBASEQ[AQ3]"].describe()
     print '\n'
 
-   
+
     plt.figure
-    plt.subplot(131)   
-    sns.countplot(df["EWSaBASEQ[AQ_1]"].dropna(), order=range(int(df["EWSaBASEQ[AQ_1]"].min()),int(df["EWSaBASEQ[AQ_1]"].max())))   
-    plt.xlabel("Freq", fontsize = 14)                        
-    
+    plt.subplot(131)
+    sns.countplot(df["EWSaBASEQ[AQ_1]"].dropna(), order=range(int(df["EWSaBASEQ[AQ_1]"].min()),int(df["EWSaBASEQ[AQ_1]"].max())))
+    plt.xlabel("Freq", fontsize = 14)
+
 
     plt.subplot(132)
     sns.countplot(df["EWSdBASEQ[AQ2]"].dropna(), order=range(int(df["EWSdBASEQ[AQ2]"].min()),int(df["EWSdBASEQ[AQ2]"].max())))
-    plt.xlabel("Sec length", fontsize = 14)    
+    plt.xlabel("Sec length", fontsize = 14)
 
     plt.subplot(133)
     sns.countplot(df["EWSeBASEQ[AQ3]"].dropna(), order=range(int(df["EWSeBASEQ[AQ3]"].min()),int(df["EWSeBASEQ[AQ3]"].max())))
@@ -1233,20 +1267,20 @@ def run_IMIS(df, out_dir=None):
 
 
     plt.figure
-    plt.subplot(121)   
+    plt.subplot(121)
     sns.distplot(df["IMIS_NegVal_sum"].dropna(), kde = True)
-    plt.xlabel("Negative Valence", fontsize = 14)                        
-    
+    plt.xlabel("Negative Valence", fontsize = 14)
+
     plt.subplot(122)
     sns.distplot(df["IMIS_Help_sum"].dropna(), kde = True)
-    plt.xlabel("Help", fontsize = 14)    
+    plt.xlabel("Help", fontsize = 14)
     plt.show()
 
     plt.figure
     plt.subplot(121)
     sns.distplot(df["IMIS_Movement_sum"].dropna(), kde = True)
     plt.xlabel("Movement ", fontsize = 14)
-        
+
     plt.subplot(122)
     sns.distplot(df["IMIS_PersRef_sum"].dropna(), kde = True)
     plt.xlabel("Pers Refl ", fontsize = 14)
@@ -1257,34 +1291,34 @@ def run_IMIS(df, out_dir=None):
         cols = ['EWSaBASEQ[AQ_1]','EWSbBASEQ[NV1]','EWSbBASEQ[NV2]','EWSbBASEQ[NV3]','EWSbBASEQ[NV4]','EWSbBASEQ[NV5]',
                 'EWSbBASEQ[NV6]','EWSbBASEQ[NV7]','EWScBASEQ[M1]','EWScBASEQ[M2]','EWScBASEQ[M3]','EWScBASEQ[PR1]',
                 'EWScBASEQ[PR2]','EWScBASEQ[PR3]','EWScBASEQ[H1]','EWScBASEQ[H2]','EWSdBASEQ[AQ2]','EWSeBASEQ[AQ3]']
-                
-        df['ID'] = df['ID'].map(lambda x: str(x)[0:5])        
+
+        df['ID'] = df['ID'].map(lambda x: str(x)[0:5])
         df.rename(columns=dict(zip(cols, [x+1 for x in range(len(cols))])), inplace=True)
-        cols_export = ['ID'] + [x+1 for x in range(len(cols))] + ["IMIS_NegVal_sum", "IMIS_Help_sum", "IMIS_Movement_sum", "IMIS_PersRef_sum"]          
+        cols_export = ['ID'] + [x+1 for x in range(len(cols))] + ["IMIS_NegVal_sum", "IMIS_Help_sum", "IMIS_Movement_sum", "IMIS_PersRef_sum"]
         df[cols_export].to_csv('%s/involuntary_musical_imagery.csv' % out_dir, index=False)
-  
+
 
 
 ##############################################################################
 ####### Goldsmiths Musical Sophistication Index (Gold-MSI) ###################
 ##############################################################################
-  
+
 def run_GoldMSI(df, out_dir=None):
     #items to be recoded
     items_recoded = ['MUSaBASEQ[MUS_21]',
                      'MUSdBASEQ[MUS_14]',
-                     'MUSdBASEQ[MUS_27]'] 
+                     'MUSdBASEQ[MUS_27]']
     recoder = {1: 8, 2: 7, 3: 6, 4: 5, 5:4, 6:3, 7:2, 8:1}
-     
+
     for i in items_recoded:
-        df[i] = df[i].map(recoder).astype(float64) 
+        df[i] = df[i].map(recoder).astype(float64)
 
     df['GoldMSI_Active_sum'] = df[['MUSaBASEQ[MUS_21]','MUSaBASEQ[MUS_1]','MUSaBASEQ[MUS_15]','MUSaBASEQ[MUS_24]','MUSaBASEQ[MUS_28]','MUSaBASEQ[MUS_3]','MUSaBASEQ[MUS_8]','MUSbBASEQ[MUS_34]','MUScBASEQ[MUS_38]']].sum(axis=1)
 
     df['GoldMSI_Training_sum'] = df[['MUSdBASEQ[MUS_14]','MUSdBASEQ[MUS_27]','MUSeBASEQ[MUS_32]','MUSfBASEQ[MUS_33]','MUSgBASEQ[MUS_35]','MUShBASEQ[MUS_36]','MUSiBASEQ[MUS_37]']].sum(axis=1)
-    
+
     print 'Goldsmiths Musical Sophistication Index (Gold-MSI) \n\n'
-    
+
     print "Active Engagement in Musical Activities:\n"
     print df['GoldMSI_Active_sum'].describe()
     print "\n"
@@ -1297,22 +1331,22 @@ def run_GoldMSI(df, out_dir=None):
     plt.subplot(121)
     sns.distplot(df["GoldMSI_Active_sum"].dropna(), kde = True)
     plt.xlabel("Active Engagement ", fontsize = 14)
-        
+
     plt.subplot(122)
     sns.distplot(df["GoldMSI_Training_sum"].dropna(), kde = True)
     plt.xlabel("Training ", fontsize = 14)
     plt.show()
-    
+
     if out_dir:
         cols = ['MUSaBASEQ[MUS_1]','MUSaBASEQ[MUS_3]','MUSaBASEQ[MUS_8]','MUSaBASEQ[MUS_15]','MUSaBASEQ[MUS_21]','MUSaBASEQ[MUS_24]',
                 'MUSaBASEQ[MUS_28]','MUSbBASEQ[MUS_34]','MUScBASEQ[MUS_38]','MUSdBASEQ[MUS_14]','MUSdBASEQ[MUS_27]','MUSeBASEQ[MUS_32]',
                 'MUSfBASEQ[MUS_33]','MUSgBASEQ[MUS_35]','MUShBASEQ[MUS_36]','MUSiBASEQ[MUS_37]']
-               
-        df['ID'] = df['ID'].map(lambda x: str(x)[0:5])        
+
+        df['ID'] = df['ID'].map(lambda x: str(x)[0:5])
         df.rename(columns=dict(zip(cols, [x+1 for x in range(len(cols))])), inplace=True)
-        cols_export = ['ID'] + [x+1 for x in range(len(cols))] + ["GoldMSI_Active_sum", 'GoldMSI_Training_sum']          
+        cols_export = ['ID'] + [x+1 for x in range(len(cols))] + ["GoldMSI_Active_sum", 'GoldMSI_Training_sum']
         df[cols_export].to_csv('%s/goldsmith_musical_sophisticatoin.csv' % out_dir, index=False)
-  
+
 
 
 ##############################################################################
@@ -1322,25 +1356,25 @@ def run_GoldMSI(df, out_dir=None):
 def run_ESS(df, out_dir=None):
 
     print 'Questionnaire measures general level of sleepiness as the sum of 8 Items\n'
-    
+
     cols = ['ESSBASEQ[ESS1]', 'ESSBASEQ[ESS2]', 'ESSBASEQ[ESS3]', 'ESSBASEQ[ESS4]',
-            'ESSBASEQ[ESS5]', 'ESSBASEQ[ESS6]', 'ESSBASEQ[ESS7]', 'ESSBASEQ[ESS8]']    
-    
+            'ESSBASEQ[ESS5]', 'ESSBASEQ[ESS6]', 'ESSBASEQ[ESS7]', 'ESSBASEQ[ESS8]']
+
     df['ESS_summary_sum'] = df[cols].sum(axis=1)
-    
-                                
+
+
     print df['ESS_summary_sum'].describe()
     sns.countplot(df['ESS_summary_sum'].dropna(), order=range(int(df['ESS_summary_sum'].min()),int(df['ESS_summary_sum'].max())))
     plt.show()
-    
+
     if out_dir:
-        
-        df['ID'] = df['ID'].map(lambda x: str(x)[0:5])        
+
+        df['ID'] = df['ID'].map(lambda x: str(x)[0:5])
         df.rename(columns=dict(zip(cols, [x+1 for x in range(len(cols))])), inplace=True)
-        cols_export = ['ID'] + [x+1 for x in range(len(cols))] + ['ESS_summary_sum']      
+        cols_export = ['ID'] + [x+1 for x in range(len(cols))] + ['ESS_summary_sum']
         df[cols_export].to_csv('%s/epsworth_sleepiness.csv' % out_dir, index=False)
-  
-    
+
+
 
 ##############################################################################
 ############################## BDI ###########################################
@@ -1359,22 +1393,22 @@ def run_BDI(df, out_dir=None):
                 'BDIQBASEQ[BDIQ0]','BDIQBASEQ[BDIQ1]','BDIQBASEQ[BDIQ2]','BDIQBASEQ[BDIQ3]','BDIRBASEQ[BDIR0]','BDIRBASEQ[BDIR1]','BDIRBASEQ[BDIR2]','BDIRBASEQ[BDIR3]',
                 'BDISBASEQ[BDIS0]','BDISBASEQ[BDIS1]','BDISBASEQ[BDIS2]','BDISBASEQ[BDIS3]','BDIS4','BDITBASEQ[BDIT0]','BDITBASEQ[BDIT1]','BDITBASEQ[BDIT2]',
                 'BDITBASEQ[BDIT3]','BDIUBASEQ[BDIU0]','BDIUBASEQ[BDIU1]','BDIUBASEQ[BDIU2]','BDIUBASEQ[BDIU3]']
-    
+
     # recode items
     zero = ['BDIABASEQ[BDIA0]', 'BDIBBASEQ[BDIB0]', 'BDICBASEQ[BDIC0]',
             'BDIDBASEQ[BDID0]', 'BDIEBASEQ[BDIE0]', 'BDIFBASEQ[BDIF0]',
-            'BDIGBASEQ[BDIG0]', 'BDIHBASEQ[BDIH0]', 'BDIIBASEQ[BDII0]', 
-            'BDIJBASEQ[BDIJ0]', 'BDIKBASEQ[BDIK0]', 'BDILBASEQ[BDIL0]', 
+            'BDIGBASEQ[BDIG0]', 'BDIHBASEQ[BDIH0]', 'BDIIBASEQ[BDII0]',
+            'BDIJBASEQ[BDIJ0]', 'BDIKBASEQ[BDIK0]', 'BDILBASEQ[BDIL0]',
             'BDIMBASEQ[BDIM0]', 'BDINBASEQ[BDIN0]', 'BDIOBASEQ[BDIO0]',
             'BDIPBASEQ[BDIP0]', 'BDIQBASEQ[BDIQ0]', 'BDIRBASEQ[BDIR0]',
             'BDISBASEQ[BDIS0]', 'BDITBASEQ[BDIT0]', 'BDIUBASEQ[BDIU0]']
     for item in zero:
         df[item].replace(to_replace='Y', value=0, inplace=True)
         df[item].replace(to_replace='NaN', value=0, inplace=True)
-            
+
     one = ['BDIABASEQ[BDIA1]', 'BDIBBASEQ[BDIB1]', 'BDICBASEQ[BDIC1]',
            'BDIDBASEQ[BDID1]', 'BDIEBASEQ[BDIE1]', 'BDIFBASEQ[BDIF1]',
-           'BDIGBASEQ[BDIG1]', 'BDIHBASEQ[BDIH1]', 'BDIIBASEQ[BDII1]', 
+           'BDIGBASEQ[BDIG1]', 'BDIHBASEQ[BDIH1]', 'BDIIBASEQ[BDII1]',
            'BDIJBASEQ[BDIJ1]', 'BDIKBASEQ[BDIK1]', 'BDILBASEQ[BDIL1]',
            'BDIMBASEQ[BDIM1]', 'BDINBASEQ[BDIN1]', 'BDIOBASEQ[BDIO1]',
            'BDIPBASEQ[BDIP1]', 'BDIQBASEQ[BDIQ1]', 'BDIRBASEQ[BDIR1]',
@@ -1382,38 +1416,38 @@ def run_BDI(df, out_dir=None):
     for item in one:
         df[item].replace(to_replace='Y', value=1, inplace=True)
         df[item].replace(to_replace='NaN', value=0, inplace=True)
-            
+
     two = ['BDIABASEQ[BDIA2]', 'BDIBBASEQ[BDIB2]', 'BDICBASEQ[BDIC2]',
            'BDIDBASEQ[BDID2]', 'BDIEBASEQ[BDIE2]', 'BDIFBASEQ[BDIF2]',
-           'BDIGBASEQ[BDIG2]', 'BDIHBASEQ[BDIH2]', 'BDIIBASEQ[BDII2]', 
-           'BDIJBASEQ[BDIJ2]', 'BDIKBASEQ[BDIK2]', 'BDILBASEQ[BDIL2]', 
+           'BDIGBASEQ[BDIG2]', 'BDIHBASEQ[BDIH2]', 'BDIIBASEQ[BDII2]',
+           'BDIJBASEQ[BDIJ2]', 'BDIKBASEQ[BDIK2]', 'BDILBASEQ[BDIL2]',
            'BDIMBASEQ[BDIM2]', 'BDINBASEQ[BDIN2]', 'BDIOBASEQ[BDIO2]',
            'BDIPBASEQ[BDIP2]', 'BDIQBASEQ[BDIQ2]', 'BDIRBASEQ[BDIR2]',
            'BDISBASEQ[BDIS2]', 'BDITBASEQ[BDIT2]', 'BDIUBASEQ[BDIU2]']
     for item in two:
         df[item].replace(to_replace='Y', value=2, inplace=True)
         df[item].replace(to_replace='NaN', value=0, inplace=True)
-            
+
     three = ['BDIABASEQ[BDIA3]', 'BDIBBASEQ[BDIB3]', 'BDICBASEQ[BDIC3]',
-             'BDIDBASEQ[BDID3]', 'BDIEBASEQ[BDIE3]', 'BDIFBASEQ[BDIF3]', 
-             'BDIGBASEQ[BDIG3]', 'BDIHBASEQ[BDIH3]', 'BDIIBASEQ[BDII3]', 
+             'BDIDBASEQ[BDID3]', 'BDIEBASEQ[BDIE3]', 'BDIFBASEQ[BDIF3]',
+             'BDIGBASEQ[BDIG3]', 'BDIHBASEQ[BDIH3]', 'BDIIBASEQ[BDII3]',
              'BDIJBASEQ[BDIJ3]', 'BDIKBASEQ[BDIK3]', 'BDILBASEQ[BDIL3]',
              'BDIMBASEQ[BDIM3]', 'BDINBASEQ[BDIN3]', 'BDIOBASEQ[BDIO3]',
              'BDIPBASEQ[BDIP3]', 'BDIQBASEQ[BDIQ3]', 'BDIRBASEQ[BDIR3]',
              'BDISBASEQ[BDIS3]', 'BDITBASEQ[BDIT3]', 'BDIUBASEQ[BDIU3]']
     for item in three:
         df[item].replace(to_replace='Y', value=3, inplace=True)
-        df[item].replace(to_replace='NaN', value=0, inplace=True)         
-             
+        df[item].replace(to_replace='NaN', value=0, inplace=True)
+
     # output
-    df['BDI_summary_sum'] = df[cols].sum(axis=1)                
-    print 'For the general population, a score of 21 or over represents depression\n'   
+    df['BDI_summary_sum'] = df[cols].sum(axis=1)
+    print 'For the general population, a score of 21 or over represents depression\n'
     print df['BDI_summary_sum'].describe()
     sns.countplot(df['BDI_summary_sum'].dropna(), order=range(int(df['BDI_summary_sum'].min()),int(df['BDI_summary_sum'].max())))
     plt.show()
-    
+
     if out_dir:
-        
+
         d = {'BDIABASEQ[BDIA0]': '1.A',
              'BDIABASEQ[BDIA1]': '1.B',
              'BDIABASEQ[BDIA2]': '1.C',
@@ -1498,13 +1532,13 @@ def run_BDI(df, out_dir=None):
              'BDIUBASEQ[BDIU0]': '22.A',
              'BDIUBASEQ[BDIU1]': '22.B',
              'BDIUBASEQ[BDIU2]': '22.C',
-             'BDIUBASEQ[BDIU3]': '22.D'}          
-        
-        df['ID'] = df['ID'].map(lambda x: str(x)[0:5])        
+             'BDIUBASEQ[BDIU3]': '22.D'}
+
+        df['ID'] = df['ID'].map(lambda x: str(x)[0:5])
         df.rename(columns=d, inplace=True)
-        cols_export = ['ID'] + list(sort(d.values())) + ['BDI_summary_sum']              
+        cols_export = ['ID'] + list(sort(d.values())) + ['BDI_summary_sum']
         df[cols_export].to_csv('%s/beck_depression_inventar.csv' % out_dir, index=False)
-  
+
 
 
 ##############################################################################
@@ -1513,7 +1547,7 @@ def run_BDI(df, out_dir=None):
 
 def run_HADS(df, out_dir=None):
     # rescaled by 1- and reversed coding for items tense, frightened, worry, restless, panic, cheerful, slowed, appearance
-    
+
     # anxiety / HADS-A
     tense = df['HADS1BASEQ[HADS1]'].subtract(1).multiply(-1).add(3)
     frightened = df['HADS3BASEQ[HADS3]'].subtract(1).multiply(-1).add(3)
@@ -1523,7 +1557,7 @@ def run_HADS(df, out_dir=None):
     restless = df['HADS11BASEQ[HADS11]'].subtract(1).multiply(-1).add(3)
     panic = df['HADS13BASEQ[HADS13]'].subtract(1).multiply(-1).add(3)
     anxiety = [tense, frightened, worry, relaxed, butterflies, restless, panic]
-    
+
     # depression / HADS-D
     enjoy = df['HADS2BASEQ[HADS2]'].subtract(1)
     laugh = df['HADS4BASEQ[HADS4]'].subtract(1)
@@ -1533,32 +1567,32 @@ def run_HADS(df, out_dir=None):
     lookforward = df['HADS12BASEQ[HADS12]'].subtract(1)
     entertain = df['HADS14BASEQ[HADS14]'].subtract(1)
     depression = [enjoy, laugh, cheerful, slowed, appearance, lookforward, entertain]
-    
+
     print 'rough interpretation: \n0-7 normal range, 8-10 suggestive presence of mood disorder, >11 probable presence of mood disorder \n'
-    
+
     #### anxiety ####
     print 'HADS-A - anxiety\n'
     df['HADS_summary_HADS-A_sum'] = tense + frightened + worry + relaxed + butterflies + restless + panic
     print df['HADS_summary_HADS-A_sum'].describe()
     sns.countplot(df['HADS_summary_HADS-A_sum'].dropna(), order=range(int(df['HADS_summary_HADS-A_sum'].min()),int(df['HADS_summary_HADS-A_sum'].max())))
     plt.show()
-     
-    
+
+
     #### depression ####
     print '\n\nHADS-D - depression\n'
     df['HADS_summary_HADS-D_sum'] = enjoy + laugh + cheerful + slowed + appearance + lookforward + entertain
     print df['HADS_summary_HADS-D_sum'].describe()
     sns.countplot(df['HADS_summary_HADS-D_sum'].dropna(), order=range(int(df['HADS_summary_HADS-D_sum'].min()),int(df['HADS_summary_HADS-D_sum'].max())))
     plt.show()
-    
+
     if out_dir:
         cols = ['HADS1BASEQ[HADS1]','HADS2BASEQ[HADS2]','HADS3BASEQ[HADS3]','HADS4BASEQ[HADS4]','HADS5BASEQ[HADS5]',
                 'HADS6BASEQ[HADS6]','HADS7BASEQ[HADS7]','HADS8BASEQ[HADS8]','HADS9BASEQ[HADS9]','HADS10BASEQ[HADS10]',
                 'HADS11BASEQ[HADS11]','HADS12BASEQ[HADS12]','HADS13BASEQ[HADS13]','HADS14BASEQ[HADS14]']
-        
-        df['ID'] = df['ID'].map(lambda x: str(x)[0:5])        
+
+        df['ID'] = df['ID'].map(lambda x: str(x)[0:5])
         df.rename(columns=dict(zip(cols, [x+1 for x in range(len(cols))])), inplace=True)
-        cols_export = ['ID'] + [x+1 for x in range(len(cols))] + ['HADS_summary_HADS-A_sum', 'HADS_summary_HADS-D_sum']               
+        cols_export = ['ID'] + [x+1 for x in range(len(cols))] + ['HADS_summary_HADS-A_sum', 'HADS_summary_HADS-D_sum']
         df[cols_export].to_csv('%s/hamilton_anxiety_depression.csv' % out_dir, index=False)
 
 
@@ -1570,8 +1604,8 @@ def run_HADS(df, out_dir=None):
 def run_BPS(df, out_dir=None):
 
     print "Questionnaire measures boredom proneness as the sum of 28 items\n"
-    
-    #items to be recoded                                
+
+    #items to be recoded
     items_recoded = ['BPSaBASEQ[BPS1]',
                      'BPSaBASEQ[BPS7]',
                      'BPSaBASEQ[BPS8]',
@@ -1583,12 +1617,12 @@ def run_BPS(df, out_dir=None):
                      'BPScBASEQ[BPS22]',
                      'BPScBASEQ[BPS23]',
                      'BPScBASEQ[BPS24]']
-                         
-                             
-    #recode items                 
+
+
+    #recode items
     recoder = {1: 7 , 2: 6, 3: 5, 5: 3, 6: 2, 7: 1 }
     for i in items_recoded:
-        df[i] = df[i].map(recoder).astype(float64)   
+        df[i] = df[i].map(recoder).astype(float64)
 
     #Calculate total score as the sum of Item 1-28.
     cols = ['BPSaBASEQ[BPS1]','BPSaBASEQ[BPS2]','BPSaBASEQ[BPS3]',
@@ -1601,19 +1635,19 @@ def run_BPS(df, out_dir=None):
             'BPScBASEQ[BPS22]','BPScBASEQ[BPS23]','BPScBASEQ[BPS24]',
             'BPScBASEQ[BPS25]','BPScBASEQ[BPS26]','BPScBASEQ[BPS27]',
             'BPScBASEQ[BPS28]']
-    
+
     df['BPS_sum'] = df[cols].sum(axis=1)
-                    
-    print df['BPS_sum'].describe() 
-    sns.distplot(df['BPS_sum'].dropna(), kde = True)                
-    
+
+    print df['BPS_sum'].describe()
+    sns.distplot(df['BPS_sum'].dropna(), kde = True)
+
     if out_dir:
-        
-        df['ID'] = df['ID'].map(lambda x: str(x)[0:5])        
+
+        df['ID'] = df['ID'].map(lambda x: str(x)[0:5])
         df.rename(columns=dict(zip(cols, [x+1 for x in range(len(cols))])), inplace=True)
-        cols_export = ['ID'] + [x+1 for x in range(len(cols))] + ['BPS_sum']                 
+        cols_export = ['ID'] + [x+1 for x in range(len(cols))] + ['BPS_sum']
         df[cols_export].to_csv('%s/boredom_proness.csv' % out_dir, index=False)
-  
+
 
 
 ##############################################################################
@@ -1621,7 +1655,7 @@ def run_BPS(df, out_dir=None):
 ##############################################################################
 
 def run_DAC(df, out_dir=None):
-    #items to be recoded                                
+    #items to be recoded
     items_recoded = ['DACaBASEQ[DAC1]',
                     'DACaBASEQ[DAC2]',
                     'DACaBASEQ[DAC3]',
@@ -1629,15 +1663,15 @@ def run_DAC(df, out_dir=None):
                     'DACaBASEQ[DAC7]',
                     'DACbBASEQ[DAC8]',
                     'DACbBASEQ[DAC11]',
-                    'DACbBASEQ[DAC12]',     
+                    'DACbBASEQ[DAC12]',
                     'DACbBASEQ[DAC15]',
                     'DACcBASEQ[DAC16]',
                     'DACcBASEQ[DAC20]']
-    
-    #recode items                 
+
+    #recode items
     recoder = {1: 4 , 2: 3, 3: 2, 4: 1}
     for i in items_recoded:
-        df[i] = df[i].map(recoder).astype(float64)   
+        df[i] = df[i].map(recoder).astype(float64)
 
     #Calculate total score as the sum of Item 1-20.
     cols = ['DACaBASEQ[DAC1]','DACaBASEQ[DAC2]','DACaBASEQ[DAC3]',
@@ -1646,30 +1680,30 @@ def run_DAC(df, out_dir=None):
             'DACbBASEQ[DAC10]','DACbBASEQ[DAC11]','DACbBASEQ[DAC12]',
             'DACbBASEQ[DAC13]','DACbBASEQ[DAC14]','DACbBASEQ[DAC15]',
             'DACcBASEQ[DAC16]','DACcBASEQ[DAC17]','DACcBASEQ[DAC18]',
-            'DACcBASEQ[DAC19]','DACcBASEQ[DAC20]']     
-    
+            'DACcBASEQ[DAC19]','DACcBASEQ[DAC20]']
+
     df['DAC_sum'] = df[cols].sum(axis=1)
-    print df['DAC_sum'].describe()   
+    print df['DAC_sum'].describe()
     sns.distplot(df['DAC_sum'].dropna(), kde = True)
-    
+
     if out_dir:
-        
-        df['ID'] = df['ID'].map(lambda x: str(x)[0:5])        
+
+        df['ID'] = df['ID'].map(lambda x: str(x)[0:5])
         df.rename(columns=dict(zip(cols, [x+1 for x in range(len(cols))])), inplace=True)
-        cols_export = ['ID'] + [x+1 for x in range(len(cols))] + ['DAC_sum']                  
+        cols_export = ['ID'] + [x+1 for x in range(len(cols))] + ['DAC_sum']
         df[cols_export].to_csv('%s/derryberry_attention_control.csv' % out_dir, index=False)
-  
-  
+
+
 
 ##############################################################################
 ############################## NEO-PI-R ######################################
 ##############################################################################
 
 def run_NEOPIR(pir_f, ffi_lsd_f, out_dir=None):
-    
-    
-#####  create combined dataframe ####    
-    
+
+
+#####  create combined dataframe ####
+
 
     cols_neo_pir = ['ID', 'NEOaBASEQ[NEO2]','NEOaBASEQ[NEO3]','NEOaBASEQ[NEO5]','NEOaBASEQ[NEO7r]','NEOaBASEQ[NEO8r]','NEOaBASEQ[NEO9]','NEOaBASEQ[NEO10r]','NEOaBASEQ[NEO12]',
                 'NEOaBASEQ[NEO13]','NEOaBASEQ[NEO16]','NEObBASEQ[NEO17r]','NEObBASEQ[NEO18r]','NEObBASEQ[NEO20r]','NEObBASEQ[NEO21r]','NEObBASEQ[NEO22]','NEObBASEQ[NEO24r]',
@@ -1694,7 +1728,7 @@ def run_NEOPIR(pir_f, ffi_lsd_f, out_dir=None):
                 'NEOqBASEQ[NEO217]','NEOqBASEQ[NEO218]','NEOqBASEQ[NEO219r]','NEOqBASEQ[NEO220r]','NEOqBASEQ[NEO222r]','NEOqBASEQ[NEO223]','NEOqBASEQ[NEO224]','NEOqBASEQ[NEO225]',
                 'NEOqBASEQ[NEO226]','NEOqBASEQ[NEO228r]','NEOrBASEQ[NEO230]','NEOrBASEQ[NEO231r]','NEOrBASEQ[NEO232]','NEOrBASEQ[NEO233]','NEOrBASEQ[NEO234r]','NEOrBASEQ[NEO235]',
                 'NEOrBASEQ[NEO236r]','NEOrBASEQ[NEO238r]','NEOrBASEQ[NEO239]','NEOrBASEQ[NEO240]','NEOrBASEQ[NEO241]']
-    
+
     cols_NEOFFI = ['ID', 'NEOFFI01[NEOFFI01]','NEOFFI01[NEOFFI02]','NEOFFI01[NEOFFI03]','NEOFFI01[NEOFFI04]','NEOFFI01[NEOFFI05]','NEOFFI01[NEOFFI06]','NEOFFI01[NEOFFI07]',
                    'NEOFFI01[NEOFFI08]','NEOFFI01[NEOFFI09]','NEOFFI01[NEOFFI10]','NEOFFI01[NEOFFI11]','NEOFFI01[NEOFFI12]','NEOFFI13[NEOFFI13]','NEOFFI13[NEOFFI14]',
                    'NEOFFI13[NEOFFI15]','NEOFFI13[NEOFFI16]','NEOFFI13[NEOFFI17]','NEOFFI13[NEOFFI18]','NEOFFI13[NEOFFI19]','NEOFFI13[NEOFFI20]','NEOFFI13[NEOFFI21]',
@@ -1704,15 +1738,15 @@ def run_NEOPIR(pir_f, ffi_lsd_f, out_dir=None):
                    'NEOFFI37[NEOFFI43]','NEOFFI37[NEOFFI44]','NEOFFI37[NEOFFI45]','NEOFFI37[NEOFFI46]','NEOFFI37[NEOFFI47]','NEOFFI37[NEOFFI48]','NEOFFI49[NEOFFI49]',
                    'NEOFFI49[NEOFFI50]','NEOFFI49[NEOFFI51]','NEOFFI49[NEOFFI52]','NEOFFI49[NEOFFI53]','NEOFFI49[NEOFFI54]','NEOFFI49[NEOFFI55]','NEOFFI49[NEOFFI56]',
                    'NEOFFI49[NEOFFI57]','NEOFFI49[NEOFFI58]','NEOFFI49[NEOFFI59]','NEOFFI49[NEOFFI60]']
-     
-    
-    ##### Neo PI R lemon & lsd #### 
-    
+
+
+    ##### Neo PI R lemon & lsd ####
+
     df_pir = pd.read_csv(pir_f, sep = ",")[cols_neo_pir]
     # prep df
     df_pir['ID'].replace('LSD2', '25729', inplace = True)
     df_pir['ID'] = df_pir['ID'].map(lambda x: str(x)[0:5])
-    
+
     # recode item names from complicated to item numbers
     new_items = []
     for item in df_pir.columns.values[1:]:
@@ -1724,13 +1758,13 @@ def run_NEOPIR(pir_f, ffi_lsd_f, out_dir=None):
     dictionary1 = dict(zip(df_pir.columns.values[1:], new_items))
     df_pir.rename(columns=dictionary1, inplace=True)
     df_pir.dropna(inplace=True)
-    
-    
-    
+
+
+
     ##### NEO FFI lsd #####
-    
+
     df_ffi_lsd = pd.read_csv(ffi_lsd_f, sep = ",", converters={'ID':str})[cols_NEOFFI]
-    
+
     # recode item names from complicated to 1-60
     new_items = []
     for item in df_ffi_lsd.columns.values[1:]:
@@ -1741,17 +1775,17 @@ def run_NEOPIR(pir_f, ffi_lsd_f, out_dir=None):
         new_items.append(item)
     dictionary2 = dict(zip(df_ffi_lsd.columns.values[1:], new_items))
     df_ffi_lsd.rename(columns=dictionary2, inplace=True)
-    
+
     # recode ffi item numbers into pir item numbers
     ffi2pir = pd.read_excel('/scr/liberia1/data/lsd/behavioral/NEO/NEO KEY.xlsx', converters={0:str, 1:str})
     dictionary3 = dict(zip(ffi2pir['Neo FFI'],ffi2pir['NEO PI R']))
     df_ffi_lsd.rename(columns=dictionary3, inplace=True)
     df_ffi_lsd.dropna(inplace=True)
-    
-    
-    
+
+
+
     ##### NEO FFI lemon #####
-    
+
     # read in lemon ffi
     df_ffi_lemon = pd.read_csv('/scr/liberia1/data/lsd/behavioral/NEO/NEO-FFI_60.csv').ix[:, 0:61]
     # recode ffi item numbers into pir item numbers
@@ -1759,7 +1793,7 @@ def run_NEOPIR(pir_f, ffi_lsd_f, out_dir=None):
     # change lemon ID to db ID
     df_ffi_lemon.rename(columns={'ID':'Lemon_ID'}, inplace=True)
     df_ffi_lemon.dropna(inplace=True)
-    IDentifier = pd.read_excel('/scr/liberia1/data/lsd/behavioral/NEO/LEMONidentifier.xlsx', 
+    IDentifier = pd.read_excel('/scr/liberia1/data/lsd/behavioral/NEO/LEMONidentifier.xlsx',
                                sheetname='Overview', converters={1:str}).ix[:193, :2]
     for n in range(len(IDentifier)):
         try:
@@ -1777,10 +1811,10 @@ def run_NEOPIR(pir_f, ffi_lsd_f, out_dir=None):
     IDentifier.rename(columns={'DB_ID':'ID'}, inplace=True)
     df_ffi_lemon = pd.merge(df_ffi_lemon, IDentifier, on='Lemon_ID', how='left')
     df_ffi_lemon.drop('Lemon_ID', axis=1, inplace=True)
-    
-    
+
+
     ##### merge everything #####
-    
+
     # combine FFI of lemon and lsd
     df_ffi = pd.concat([df_ffi_lemon, df_ffi_lsd])
     # merge FFI with PI R
@@ -1788,15 +1822,15 @@ def run_NEOPIR(pir_f, ffi_lsd_f, out_dir=None):
     df_neo.rename(columns={'70_x':'70_pir', '70_y':'70'}, inplace=True)
     col_ordered = ['ID']+[str(x+1) for x in range(241) if x != 82]
     df =  df_neo[col_ordered].copy()
-    
 
-#### compute scales ####    
 
-    print 'measure of the Five Factor Model and uses these five dimensions to evaluate adult personality' 
-    print '– emotional, interpersonal, experiential, attitudinal, and motivational styles –' 
+#### compute scales ####
+
+    print 'measure of the Five Factor Model and uses these five dimensions to evaluate adult personality'
+    print '– emotional, interpersonal, experiential, attitudinal, and motivational styles –'
     print '241 items using a 5-point scale'
-    
-        
+
+
     #recode reversed items
     items_recoded = ['61','1','121','181','36','96','156','11','71','46','106','166','21'
                      ,'81','231','141','56','116','176','206','236','32','92','7','67','127',
@@ -1807,13 +1841,13 @@ def run_NEOPIR(pir_f, ffi_lsd_f, out_dir=None):
                      '14','74','134','49','109','169','199','229','24','84','144','234',
                      '59','119','35','95','155','10','70','130','190','220','45','105','20',
                      '80','140','55','115','175','205','30','90','150']
-                 
-                  
-                     
-    recoder = {0: 4, 1: 3, 3: 1, 4: 0}    
+
+
+
+    recoder = {0: 4, 1: 3, 3: 1, 4: 0}
     for i in items_recoded:
-        df[i] = df[i].map(recoder).astype(float64)  
-    
+        df[i] = df[i].map(recoder).astype(float64)
+
     # calculate subscales as means for all 30 facets
 
     #Neuroticism
@@ -1823,10 +1857,10 @@ def run_NEOPIR(pir_f, ffi_lsd_f, out_dir=None):
                        '16','46','76','106','136','166','196','226',
                        '21','51','81','111','141','171','201','231',
                        '26','56','86','116','146','176','206','236']].mean(axis=1)
-                       
-    print '\n','### NEO Neuroticism ###'                   
-    print df['NEO_N'].describe()                    
-            
+
+    print '\n','### NEO Neuroticism ###'
+    print df['NEO_N'].describe()
+
     #N1 anxiety
     df['NEO_N1_anx'] = df[['1','31','61','91','121','151','181','211']].mean(axis=1)
     #N2 angry hostility
@@ -1839,21 +1873,21 @@ def run_NEOPIR(pir_f, ffi_lsd_f, out_dir=None):
     df['NEO_N5_imp'] = df[['21','51','81','111','141','171','201','231']].mean(axis=1)
     #N6 Vulnerability
     df['NEO_N6_vuln'] = df[['26','56','86','116','146','176','206','236']].mean(axis=1)
-    
+
 
     #Extraversion
-    
+
     df['NEO_E'] = df[['2','32','62','92','122','152','182','212',
                       '7','37','67','97','127','157','187','217',
                       '12','42','72','102','132','162','192','222',
                       '17','47','77','107','137','167','197','227',
                       '22','52','82','112','142','172','202','232',
                       '27','57','87','117','147','177','207','237']].mean(axis=1)
-     
-    print '\n','### NEO Extraversion ###'                   
-    print df['NEO_E'].describe()  
 
-       
+    print '\n','### NEO Extraversion ###'
+    print df['NEO_E'].describe()
+
+
     #E1 warmth
     df['NEO_E1_warm'] = df[['2','32','62','92','122','152','182','212']].mean(axis=1)
     #E2 Gregariousness
@@ -1867,21 +1901,21 @@ def run_NEOPIR(pir_f, ffi_lsd_f, out_dir=None):
     #N6 Positive Emotions
     df['NEO_E6_PosEmo'] = df[['27','57','87','117','147','177','207','237']].mean(axis=1)
 
-    
+
     #Openness
     #item 83 missing
-    
+
     df['NEO_O'] = df[['3','33','63','93','123','153','183','213',
                       '8','38','68','98','128','158','188','218',
                       '13','43','73','103','133','163','193','223',
                       '18','48','78','108','138','168','198','228',
                       '23','53','113','143','173','203','233',
                       '28','58','88','118','148','178','208','238']].mean(axis=1)
-    
-    print '\n','### NEO Openness (item 83 missing) ###'                   
-    print df['NEO_O'].describe()     
-    
-    
+
+    print '\n','### NEO Openness (item 83 missing) ###'
+    print df['NEO_O'].describe()
+
+
     #O1 fantasy
     df['NEO_O1_fan'] = df[['3','33','63','93','123','153','183','213']].mean(axis=1)
     #O2 aesthetics
@@ -1895,23 +1929,23 @@ def run_NEOPIR(pir_f, ffi_lsd_f, out_dir=None):
     df['NEO_O5_idea'] = df[['23','53','113','143','173','203','233']].mean(axis=1)
     #06 values
     df['NEO_O6_value'] = df[['28','58','88','118','148','178','208','238']].mean(axis=1)
-        
-    
-    
+
+
+
     #Agreeableness
-    
+
     df['NEO_A'] = df[['4','34','64','94','124','154','184','214',
                       '9','39','69','99','129','159','189','219',
                       '14','44','74','104','134','164','194','224',
                       '19','49','79','109','139','169','199','229',
                       '24','54','84','114','144','174','204','234',
                       '29','59','89','119','149','179','209','239']].mean(axis=1)
-    
-    print '\n','### NEO Agreeableness ###'                   
-    print df['NEO_A'].describe()        
-    
-    
-    
+
+    print '\n','### NEO Agreeableness ###'
+    print df['NEO_A'].describe()
+
+
+
     #A1 trust
     df['NEO_A1_trust'] = df[['4','34','64','94','124','154','184','214']].mean(axis=1)
     #A2 straightforwardedness
@@ -1924,191 +1958,191 @@ def run_NEOPIR(pir_f, ffi_lsd_f, out_dir=None):
     df['NEO_A5_modes'] = df[['24','54','84','114','144','174','204','234']].mean(axis=1)
     #A6 tender_mindedness
     df['NEO_A6_tenmind'] = df[['29','59','89','119','149','179','209','239']].mean(axis=1)
-    
-    
-    
+
+
+
     #Conscientiousness
-    
+
     df['NEO_C'] = df[['5','35','65','95','125','155','185','215',
                              '10','40','70','100','130','160','190','220',
                              '15','45','75','105','135','165','195','225',
                              '20','50','80','110','140','170','200','230',
                              '25','55','85','115','145','175','205','235',
                              '30','60','90','120','150','180','210','240']].mean(axis=1)
-    
-    
-    print '\n','### NEO Conscientiousnesss ###'                   
-    print df['NEO_C'].describe()     
-    
-    
-    #C1 compentence 
+
+
+    print '\n','### NEO Conscientiousnesss ###'
+    print df['NEO_C'].describe()
+
+
+    #C1 compentence
     df['NEO_C1_comp'] = df[['5','35','65','95','125','155','185','215']].mean(axis=1)
     #C2 order
     df['NEO_C2_order'] = df[['10','40','70','100','130','160','190','220']].mean(axis=1)
     #C3 dutifulness
     df['NEO_C3_dutif'] = df[['15','45','75','105','135','165','195','225']].mean(axis=1)
-    #C4 achievement striving 
+    #C4 achievement striving
     df['NEO_C4_achstr'] = df[['20','50','80','110','140','170','200','230']].mean(axis=1)
     #C5 self discipline
     df['NEO_C5_selfdis'] = df[['25','55','85','115','145','175','205','235']].mean(axis=1)
     #C6 deliberation
     df['NEO_C6_deli'] = df[['30','60','90','120','150','180','210','240']].mean(axis=1)
-  
-  
+
+
     #create histograms of subscales
     plt.figure(figsize =(16,12))
-    
+
     plt.subplot(231)
     sns.distplot(df["NEO_N"].dropna(), kde = True)
     plt.xlabel('NEO_N', fontsize = 14)
-    
+
     plt.subplot(232)
     sns.distplot(df['NEO_E'].dropna(), kde = True)
     plt.xlabel('NEO_E', fontsize = 14)
-   
+
     plt.subplot(233)
     sns.distplot(df['NEO_O'].dropna(), kde = True)
     plt.xlabel('NEO_O', fontsize = 14)
-    
-    
+
+
     plt.subplot(234)
     sns.distplot(df['NEO_A'].dropna(), kde = True)
     plt.xlabel('NEO_A', fontsize = 14)
-    
-    
+
+
     plt.subplot(235)
     sns.distplot(df['NEO_C'].dropna(), kde = True)
     plt.xlabel('NEO_C', fontsize = 14)
     plt.show()
-  
-    
-    
+
+
+
     plt.figure(figsize =(20,35))
-    
+
     plt.subplot(841)
     sns.distplot(df['NEO_N1_anx'].dropna(), kde = True)
     plt.xlabel('NEO_N1_anx', fontsize = 14)
-    
+
     plt.subplot(842)
     sns.distplot(df['NEO_N2_host'].dropna(), kde = True)
     plt.xlabel('NEO_N2_host', fontsize = 14)
-    
+
     plt.subplot(843)
     sns.distplot(df['NEO_N3_depr'].dropna(), kde = True)
     plt.xlabel('NEO_N3_depr', fontsize = 14)
-    
+
     plt.subplot(8,4,4)
     sns.distplot(df['NEO_N4_selfcon'].dropna(), kde = True)
     plt.xlabel('NEO_N4_selfcon', fontsize = 14)
-    
+
     plt.subplot(8,4,5)
     sns.distplot(df['NEO_N5_imp'].dropna(), kde = True)
     plt.xlabel('NEO_N5_imp', fontsize = 14)
-    
+
     plt.subplot(8,4,6)
     sns.distplot(df['NEO_N6_vuln'].dropna(), kde = True)
     plt.xlabel('NEO_N6_vuln', fontsize = 14)
-    
+
     plt.subplot(8,4,7)
     sns.distplot(df['NEO_E1_warm'].dropna(), kde = True)
     plt.xlabel('NEO_E1_warm', fontsize = 14)
-    
+
     plt.subplot(8,4,8)
     sns.distplot(df['NEO_E2_greg'].dropna(), kde = True)
     plt.xlabel('NEO_E2_greg', fontsize = 14)
-    
+
     plt.subplot(8,4,9)
     sns.distplot(df['NEO_E3_ass'].dropna(), kde = True)
     plt.xlabel('NEO_E3_ass', fontsize = 14)
-    
+
     plt.subplot(8,4,10)
     sns.distplot(df['NEO_E4_act'].dropna(), kde = True)
     plt.xlabel('NEO_E4_act', fontsize = 14)
-    
+
     plt.subplot(8,4,11)
     sns.distplot(df['NEO_E5_excseek'].dropna(), kde = True)
     plt.xlabel('NEO_E5_excseek', fontsize = 14)
-    
+
     plt.subplot(8,4,12)
     sns.distplot(df['NEO_E6_PosEmo'].dropna(), kde = True)
     plt.xlabel('NEO_E6_PosEmo', fontsize = 14)
-    
+
     plt.subplot(8,4,13)
     sns.distplot(df['NEO_O1_fan'].dropna(), kde = True)
     plt.xlabel('NEO_O1_fan', fontsize = 14)
-    
+
     plt.subplot(8,4,14)
     sns.distplot(df['NEO_O2_aest'].dropna(), kde = True)
     plt.xlabel('NEO_O2_aest', fontsize = 14)
-    
+
     plt.subplot(8,4,15)
     sns.distplot(df['NEO_O3_feel'].dropna(), kde = True)
     plt.xlabel('NEO_O3_feel', fontsize = 14)
-    
+
     plt.subplot(8,4,16)
     sns.distplot(df['NEO_O4_act'].dropna(), kde = True)
     plt.xlabel('NEO_O4_act', fontsize = 14)
-    
+
     plt.subplot(8,4,17)
     sns.distplot(df['NEO_O5_idea'].dropna(), kde = True)
     plt.xlabel('NEO_O5_idea', fontsize = 14)
-           
+
     plt.subplot(8,4,18)
     sns.distplot(df['NEO_O6_value'].dropna(), kde = True)
     plt.xlabel('NEO_O6_value', fontsize = 14)
-    
+
     plt.subplot(8,4,19)
     sns.distplot(df['NEO_A1_trust'].dropna(), kde = True)
     plt.xlabel('NEO_A1_trust', fontsize = 14)
-    
+
     plt.subplot(8,4,20)
     sns.distplot(df['NEO_A2_sf'].dropna(), kde = True)
     plt.xlabel('NEO_A2_sf', fontsize = 14)
-    
+
     plt.subplot(8,4,21)
     sns.distplot(df['NEO_A3_altr'].dropna(), kde = True)
     plt.xlabel('NEO_A3_altr', fontsize = 14)
-    
+
     plt.subplot(8,4,22)
     sns.distplot(df['NEO_A4_compl'].dropna(), kde = True)
     plt.xlabel('NEO_A4_compl', fontsize = 14)
-    
+
     plt.subplot(8,4,23)
     sns.distplot(df['NEO_A5_modes'].dropna(), kde = True)
     plt.xlabel('NEO_A5_modes', fontsize = 14)
-          
+
     plt.subplot(8,4,24)
     sns.distplot(df['NEO_A6_tenmind'].dropna(), kde = True)
     plt.xlabel('NEO_A6_tenmind', fontsize = 14)
-    
+
     plt.subplot(8,4,25)
     sns.distplot(df['NEO_C1_comp'].dropna(), kde = True)
     plt.xlabel('NEO_C1_comp', fontsize = 14)
-          
+
     plt.subplot(8,4,26)
     sns.distplot(df['NEO_C2_order'].dropna(), kde = True)
     plt.xlabel('NEO_C2_order', fontsize = 14)
-    
+
     plt.subplot(8,4,27)
     sns.distplot(df['NEO_C3_dutif'].dropna(), kde = True)
     plt.xlabel('NEO_C3_dutif', fontsize = 14)
-    
+
     plt.subplot(8,4,28)
     sns.distplot(df['NEO_C4_achstr'].dropna(), kde = True)
     plt.xlabel('NEO_C4_achstr', fontsize = 14)
-    
+
     plt.subplot(8,4,29)
     sns.distplot(df['NEO_C5_selfdis'].dropna(), kde = True)
     plt.xlabel('NEO_C5_selfdis', fontsize = 14)
-          
+
     plt.subplot(8,4,30)
     sns.distplot(df['NEO_C6_deli'].dropna(), kde = True)
     plt.xlabel('NEO_C6_deli', fontsize = 14)
 
     if out_dir:
         df.to_csv('%s/NEO_PI_R.csv' % out_dir, index=False)
-  
-  
+
+
 
 ##############################################################################
 ############# PSSI - Persönlichkeitsstil- und Störungsinventar################
@@ -2136,66 +2170,66 @@ def run_PSSI(df, out_dir=None):
     #recode all items to original format (limesurvey: 1234, original = 0123)
     recoder = {1: 0, 2: 1, 3: 2, 4: 3 }
     for i in cols:
-        df[i] = df[i].map(recoder).astype(float64) 
-        
+        df[i] = df[i].map(recoder).astype(float64)
+
     #recode reversed items
     items_recoded = ['PSSbBASEQ[PSS15r]',
                      'PSSeBASEQ[PSS43r]',
                      'PSShBASEQ[PSS71r]',
                      'PSSjBASEQ[PSS99r]',
-                     'PSSeBASEQ[PSS44r]', 
+                     'PSSeBASEQ[PSS44r]',
                      'PSShBASEQ[PSS72r]',
                      'PSSiBASEQ[PSS86r]',
                      'PSSkBASEQ[PSS104r]',
                      'PSSeBASEQ[PSS49r]',
-                     'PSSjBASEQ[PSS91r]', 
+                     'PSSjBASEQ[PSS91r]',
                      'PSSkBASEQ[PSS105r]',
                      'PSSdBASEQ[PSS39r]',
                      'PSSgBASEQ[PSS67r]',
                      'PSSkBASEQ[PSS109r]',
-                     'PSSnBASEQ[PSS137r]']    
-                     
-    recoder = {0: 3, 1: 2, 2: 1, 3: 0}     
+                     'PSSnBASEQ[PSS137r]']
+
+    recoder = {0: 3, 1: 2, 2: 1, 3: 0}
     for i in items_recoded:
-        df[i] = df[i].map(recoder).astype(float64)  
-    
-    # calculate subscales as sumscores   
-    
-    #PN = eigenwillig_paranoid     
+        df[i] = df[i].map(recoder).astype(float64)
+
+    # calculate subscales as sumscores
+
+    #PN = eigenwillig_paranoid
     df['PSSI_PN'] = df[['PSSaBASEQ[PSS1]',
                         'PSSbBASEQ[PSS15r]',
                         'PSScBASEQ[PSS29]',
-                        'PSSeBASEQ[PSS43r]', 
+                        'PSSeBASEQ[PSS43r]',
                         'PSSfBASEQ[PSS57]',
                         'PSShBASEQ[PSS71r]',
                         'PSSiBASEQ[PSS85]',
                         'PSSjBASEQ[PSS99r]',
                         'PSSlBASEQ[PSS113]',
                         'PSSmBASEQ[PSS127]']].sum(axis=1)
-                        
+
     print '\n', '### PSSI_PN: eigenwillig paranoid ###'
-    print df['PSSI_PN'].describe()                    
-    
-    #SZ = zurückhaltend-schizoid                    
+    print df['PSSI_PN'].describe()
+
+    #SZ = zurückhaltend-schizoid
     df['PSSI_SZ'] = df[['PSSaBASEQ[PSS2]',
                         'PSSbBASEQ[PSS16]',
                         'PSScBASEQ[PSS30]',
-                        'PSSeBASEQ[PSS44r]', 
+                        'PSSeBASEQ[PSS44r]',
                         'PSSfBASEQ[PSS58]',
                         'PSShBASEQ[PSS72r]',
                         'PSSiBASEQ[PSS86r]',
                         'PSSjBASEQ[PSS100]',
-                        'PSSlBASEQ[PSS114]', 
+                        'PSSlBASEQ[PSS114]',
                         'PSSmBASEQ[PSS128]']].sum(axis=1)
-    
-    
+
+
     print '\n','### PSSI_SZ: zurückhaltend-schizoid ###'
-    print df['PSSI_SZ'].describe()                     
-    
-    
-    
+    print df['PSSI_SZ'].describe()
+
+
+
     #ST = ahnungsvoll-schizotypisch
-                        
+
     df['PSSI_ST'] = df[['PSSaBASEQ[PSS3]',
                         'PSSbBASEQ[PSS17]',
                         'PSSdBASEQ[PSS31]',
@@ -2204,255 +2238,255 @@ def run_PSSI(df, out_dir=None):
                         'PSShBASEQ[PSS73]',
                         'PSSiBASEQ[PSS87]',
                         'PSSkBASEQ[PSS101]',
-                        'PSSlBASEQ[PSS115]', 
-                        'PSSmBASEQ[PSS129]']].sum(axis=1)     
-    
-    
+                        'PSSlBASEQ[PSS115]',
+                        'PSSmBASEQ[PSS129]']].sum(axis=1)
+
+
     print '\n', '### PSSI_ST ahnungsvoll-schizotypisch ###'
-    print df['PSSI_ST'].describe()                         
-                        
+    print df['PSSI_ST'].describe()
+
     #BL = spontan-borderline
     df['PSSI_BL'] = df[['PSSaBASEQ[PSS4]',
                         'PSSbBASEQ[PSS18]',
                         'PSSdBASEQ[PSS32]',
-                        'PSSeBASEQ[PSS46]', 
+                        'PSSeBASEQ[PSS46]',
                         'PSSfBASEQ[PSS60]',
                         'PSShBASEQ[PSS74]',
                         'PSSiBASEQ[PSS88]',
                         'PSSkBASEQ[PSS102]',
-                        'PSSlBASEQ[PSS116]', 
-                        'PSSmBASEQ[PSS130]']].sum(axis=1) 
-    
+                        'PSSlBASEQ[PSS116]',
+                        'PSSmBASEQ[PSS130]']].sum(axis=1)
+
     print '\n','### PSSI_BL spontan-borderline ###'
-    print df['PSSI_BL'].describe()                         
-                                                
+    print df['PSSI_BL'].describe()
+
     #HI = liebenswürdig-hisrtionisch
     df['PSSI_HI'] = df[['PSSaBASEQ[PSS5]',
                         'PSSbBASEQ[PSS19]',
                         'PSSdBASEQ[PSS33]',
-                        'PSSeBASEQ[PSS47]', 
+                        'PSSeBASEQ[PSS47]',
                         'PSSgBASEQ[PSS61]',
                         'PSShBASEQ[PSS75]',
                         'PSSiBASEQ[PSS89]',
                         'PSSkBASEQ[PSS103]',
-                        'PSSlBASEQ[PSS117]', 
+                        'PSSlBASEQ[PSS117]',
                         'PSSnBASEQ[PSS131]']].sum(axis=1)
-    
+
     print '\n','### PSSI_HI liebenswürdig-histrionisch ###'
-    print df['PSSI_HI'].describe()                         
-                                      
-    # NA = ehrgeizig_narzisstisch                   
+    print df['PSSI_HI'].describe()
+
+    # NA = ehrgeizig_narzisstisch
     df['PSSI_NA'] = df[['PSSaBASEQ[PSS6]',
                         'PSSbBASEQ[PSS20]',
                         'PSSdBASEQ[PSS34]',
-                        'PSSeBASEQ[PSS48]', 
+                        'PSSeBASEQ[PSS48]',
                         'PSSgBASEQ[PSS62]',
                         'PSShBASEQ[PSS76]',
                         'PSSiBASEQ[PSS90]',
                         'PSSkBASEQ[PSS104r]',
-                        'PSSlBASEQ[PSS118]', 
-                        'PSSnBASEQ[PSS132]']].sum(axis=1)  
-    
+                        'PSSlBASEQ[PSS118]',
+                        'PSSnBASEQ[PSS132]']].sum(axis=1)
+
     print '\n','### PSSI_NA ehrgeizig_narzisstisch  ###'
-    print df['PSSI_NA'].describe()                         
-                                      
-    #SU = selbstkritisch-selbstunsicher                    
+    print df['PSSI_NA'].describe()
+
+    #SU = selbstkritisch-selbstunsicher
     df['PSSI_SU'] = df[['PSSaBASEQ[PSS7]',
                         'PSScBASEQ[PSS21]',
                         'PSSdBASEQ[PSS35]',
-                        'PSSeBASEQ[PSS49r]', 
+                        'PSSeBASEQ[PSS49r]',
                         'PSSgBASEQ[PSS63]',
                         'PSShBASEQ[PSS77]',
                         'PSSjBASEQ[PSS91r]',
                         'PSSkBASEQ[PSS105r]',
-                        'PSSlBASEQ[PSS119]', 
+                        'PSSlBASEQ[PSS119]',
                         'PSSnBASEQ[PSS133]']].sum(axis=1)
-    
+
     print '\n','### PSSI_SU selbstkritisch-selbstunsicher ###'
-    print df['PSSI_SU'].describe()                         
-                                  
-    # AB = loyal-abhängig  
+    print df['PSSI_SU'].describe()
+
+    # AB = loyal-abhängig
     df['PSSI_AB'] = df[['PSSaBASEQ[PSS8]',
                         'PSScBASEQ[PSS22]',
                         'PSSdBASEQ[PSS36]',
-                        'PSSeBASEQ[PSS50]', 
+                        'PSSeBASEQ[PSS50]',
                         'PSSgBASEQ[PSS64]',
                         'PSShBASEQ[PSS78]',
                         'PSSjBASEQ[PSS92]',
                         'PSSkBASEQ[PSS106]',
-                        'PSSlBASEQ[PSS120]', 
-                        'PSSnBASEQ[PSS134]']].sum(axis=1)    
-    
+                        'PSSlBASEQ[PSS120]',
+                        'PSSnBASEQ[PSS134]']].sum(axis=1)
+
     print '\n','### PSSI_AB loyal-abhängig  ###'
-    print df['PSSI_AB'].describe()                         
-                             
+    print df['PSSI_AB'].describe()
+
     # ZW = sorgfältig - zwanghaft
     df['PSSI_ZW'] = df[['PSSaBASEQ[PSS9]',
                         'PSScBASEQ[PSS23]',
                         'PSSdBASEQ[PSS37]',
-                        'PSSfBASEQ[PSS51]', 
+                        'PSSfBASEQ[PSS51]',
                         'PSSgBASEQ[PSS65]',
                         'PSShBASEQ[PSS79]',
                         'PSSjBASEQ[PSS93]',
                         'PSSkBASEQ[PSS107]',
-                        'PSSmBASEQ[PSS121]', 
-                        'PSSnBASEQ[PSS135]']].sum(axis=1)   
-    
+                        'PSSmBASEQ[PSS121]',
+                        'PSSnBASEQ[PSS135]']].sum(axis=1)
+
     print '\n','### PSSI_ZW sorgfältig - zwanghaft  ###'
-    print df['PSSI_ZW'].describe()                         
-                                 
-    #NT = kritisch-negativistisch    
+    print df['PSSI_ZW'].describe()
+
+    #NT = kritisch-negativistisch
     df['PSSI_NT'] = df[['PSSaBASEQ[PSS10]',
                         'PSScBASEQ[PSS24]',
                         'PSSdBASEQ[PSS38]',
-                        'PSSfBASEQ[PSS52]', 
+                        'PSSfBASEQ[PSS52]',
                         'PSSgBASEQ[PSS66]',
                         'PSShBASEQ[PSS80]',
                         'PSSjBASEQ[PSS94]',
                         'PSSkBASEQ[PSS108]',
-                        'PSSmBASEQ[PSS122]', 
+                        'PSSmBASEQ[PSS122]',
                         'PSSnBASEQ[PSS136]']].sum(axis=1)
-    
+
     print '\n','### PSSI_NT kritisch-negativistisch   ###'
-    print df['PSSI_NT'].describe()                         
-                                                
+    print df['PSSI_NT'].describe()
+
     # DP = still depressiv
     df['PSSI_DP'] = df[['PSSbBASEQ[PSS11]',
                         'PSScBASEQ[PSS25]',
                         'PSSdBASEQ[PSS39r]',
-                        'PSSfBASEQ[PSS53]', 
-                        'PSSgBASEQ[PSS67r]', 
+                        'PSSfBASEQ[PSS53]',
+                        'PSSgBASEQ[PSS67r]',
                         'PSSiBASEQ[PSS81]',
                         'PSSjBASEQ[PSS95]',
                         'PSSkBASEQ[PSS109r]',
-                        'PSSmBASEQ[PSS123]', 
+                        'PSSmBASEQ[PSS123]',
                         'PSSnBASEQ[PSS137r]']].sum(axis=1)
-    
+
     print '\n','### PSSI_DP still depressiv ###'
-    print df['PSSI_DP'].describe()                         
-                           
+    print df['PSSI_DP'].describe()
+
     #SL = hilfsbereit-selbstlos
     df['PSSI_SL'] = df[['PSSbBASEQ[PSS12]',
                         'PSScBASEQ[PSS26]',
                         'PSSdBASEQ[PSS40]',
-                        'PSSfBASEQ[PSS54]', 
-                        'PSSgBASEQ[PSS68]', 
-                        'PSSiBASEQ[PSS82]', 
+                        'PSSfBASEQ[PSS54]',
+                        'PSSgBASEQ[PSS68]',
+                        'PSSiBASEQ[PSS82]',
                         'PSSjBASEQ[PSS96]',
                         'PSSkBASEQ[PSS110]',
-                        'PSSmBASEQ[PSS124]', 
+                        'PSSmBASEQ[PSS124]',
                         'PSSnBASEQ[PSS138]']].sum(axis=1)
-    
+
     print '\n','### PSSI_SL hilfsbereit-selbstlos ###'
-    print df['PSSI_SL'].describe()                         
-                             
+    print df['PSSI_SL'].describe()
+
     #RH = optimistisch-rhapsodisch
     df['PSSI_RH'] = df[['PSSbBASEQ[PSS13]',
                         'PSScBASEQ[PSS27]',
                         'PSSeBASEQ[PSS41]',
-                        'PSSfBASEQ[PSS55]', 
+                        'PSSfBASEQ[PSS55]',
                         'PSSgBASEQ[PSS69]',
                         'PSSiBASEQ[PSS83]',
                         'PSSjBASEQ[PSS97]',
                         'PSSlBASEQ[PSS111]',
-                        'PSSmBASEQ[PSS125]', 
+                        'PSSmBASEQ[PSS125]',
                         'PSSnBASEQ[PSS139]']].sum(axis=1)
-    
+
 
     print '\n', '### PSSI_RH optimistisch-rhapsodisch ###'
-    print df['PSSI_RH'].describe()                         
-                       
+    print df['PSSI_RH'].describe()
+
     #AS = selbstbehauptend-antisozial
     df['PSSI_AS'] = df[['PSSbBASEQ[PSS14]',
                         'PSScBASEQ[PSS28]',
                         'PSSeBASEQ[PSS42]',
-                        'PSSfBASEQ[PSS56]', 
+                        'PSSfBASEQ[PSS56]',
                         'PSSgBASEQ[PSS70]',
                         'PSSiBASEQ[PSS84]',
                         'PSSjBASEQ[PSS98]',
                         'PSSlBASEQ[PSS112]',
-                        'PSSmBASEQ[PSS126]', 
+                        'PSSmBASEQ[PSS126]',
                         'PSSnBASEQ[PSS140]']].sum(axis=1)
-    
+
     print '\n','### PSSI_AS selbstbehauptend-antisozial ###'
-    print df['PSSI_AS'].describe()                         
-       
+    print df['PSSI_AS'].describe()
+
     #create histograms of subscales
     plt.figure(figsize =(16,12))
-    
+
     plt.subplot(441)
     sns.distplot(df["PSSI_PN"].dropna(), kde = True)
     plt.xlabel('PSSI_PN', fontsize = 12)
-    
+
     plt.subplot(442)
     sns.distplot(df['PSSI_SZ'].dropna(), kde = True)
     plt.xlabel('PSSI_SZ', fontsize = 12)
-    
+
     plt.subplot(443)
     sns.distplot(df['PSSI_ST'].dropna(), kde = True)
     plt.xlabel('PSSI_ST', fontsize = 12)
-    
+
     plt.subplot(444)
     sns.distplot(df['PSSI_BL'].dropna(), kde = True)
     plt.xlabel('PSSI_BL', fontsize = 12)
-    
+
     plt.subplot(445)
     sns.distplot(df['PSSI_HI'].dropna(), kde = True)
     plt.xlabel('PSSI_HI', fontsize = 12)
-    
+
     plt.subplot(446)
     sns.distplot(df['PSSI_NA'].dropna(), kde = True)
     plt.xlabel('PSSI_NA', fontsize = 12)
-    
+
     plt.subplot(447)
     sns.distplot(df['PSSI_SU'].dropna(), kde = True)
     plt.xlabel('PSSI_SU', fontsize = 12)
-    
+
     plt.subplot(448)
     sns.distplot(df['PSSI_AB'].dropna(), kde = True)
     plt.xlabel('PSSI_AB', fontsize = 12)
-    
+
     plt.subplot(449)
     sns.distplot(df['PSSI_ZW'].dropna(), kde = True)
     plt.xlabel('PSSI_ZW', fontsize = 12)
-    
+
     plt.subplot(4,4,10)
     sns.distplot(df['PSSI_NT'].dropna(), kde = True)
     plt.xlabel('PSSI_NT', fontsize = 12)
-    
+
     plt.subplot(4,4,11)
     sns.distplot(df['PSSI_DP'].dropna(), kde = True)
     plt.xlabel('PSSI_DP', fontsize = 12)
-    
+
     plt.subplot(4,4,12)
     sns.distplot(df['PSSI_SL'].dropna(), kde = True)
     plt.xlabel('PSSI_SL', fontsize = 12)
-    
+
     plt.subplot(4,4,13)
     sns.distplot(df['PSSI_RH'].dropna(), kde = True)
     plt.xlabel('PSSI_RH', fontsize = 12)
-    
+
     plt.subplot(4,4,14)
     sns.distplot(df['PSSI_AS'].dropna(), kde = True)
     plt.xlabel('PSSI_AS', fontsize = 12)
 
     if out_dir:
-        
-        df['ID'] = df['ID'].map(lambda x: str(x)[0:5])        
+
+        df['ID'] = df['ID'].map(lambda x: str(x)[0:5])
         df.rename(columns=dict(zip(cols, [x+1 for x in range(len(cols))])), inplace=True)
-        cols_export = ['ID'] + [x+1 for x in range(len(cols))] + ["PSSI_PN", 'PSSI_SZ', 'PSSI_ST', 'PSSI_BL', 
-                                                                    'PSSI_HI', 'PSSI_NA', 'PSSI_SU', 'PSSI_AB', 
-                                                                    'PSSI_ZW', 'PSSI_NT', 'PSSI_DP', 'PSSI_SL', 
-                                                                    'PSSI_RH', 'PSSI_AS']                 
+        cols_export = ['ID'] + [x+1 for x in range(len(cols))] + ["PSSI_PN", 'PSSI_SZ', 'PSSI_ST', 'PSSI_BL',
+                                                                    'PSSI_HI', 'PSSI_NA', 'PSSI_SU', 'PSSI_AB',
+                                                                    'PSSI_ZW', 'PSSI_NT', 'PSSI_DP', 'PSSI_SL',
+                                                                    'PSSI_RH', 'PSSI_AS']
         df[cols_export].to_csv('%s/persönlichkeits-stil_störungs_inventar.csv' % out_dir, index=False)
-  
+
 
 ##############################################################################
 ################################## MMI #######################################
 ##############################################################################
 
 def run_MMI(df, out_dir=None):
-#items to be recoded                                
+#items to be recoded
     cols= ['MMIadBASEQ[MMI41]' ,'MMIadBASEQ[MMI42]' ,'MMIadBASEQ[MMI43]' ,'MMIadBASEQ[MMI44]' ,'MMIadBASEQ[MMI45]' ,'MMIadBASEQ[MMI46]' ,
                    'MMIadBASEQ[MMI47]' ,'MMIadBASEQ[MMI48]' ,'MMIadBASEQ[MMI49]' ,'MMIadBASEQ[MMI410]' ,'MMIadBASEQ[MMI411]' ,'MMIadBASEQ[MMI412]' ,
                    'MMIahBASEQ[MMI81]' ,'MMIahBASEQ[MMI82]' ,'MMIahBASEQ[MMI83]' ,'MMIahBASEQ[MMI84]' ,'MMIahBASEQ[MMI85]' ,'MMIahBASEQ[MMI86]' ,
@@ -2476,13 +2510,13 @@ def run_MMI(df, out_dir=None):
                    'MMIbsBASEQ[MMI451]' ,'MMIbsBASEQ[MMI452]' ,'MMIbsBASEQ[MMI453]' ,'MMIbsBASEQ[MMI454]' ,'MMIbsBASEQ[MMI455]' ,'MMIbsBASEQ[MMI456]' ,
                    'MMIbsBASEQ[MMI457]' ,'MMIbsBASEQ[MMI458]' ,'MMIbsBASEQ[MMI459]' ,'MMIbsBASEQ[MMI4510]' ,'MMIbsBASEQ[MMI4511]' ,'MMIbsBASEQ[MMI4512]' ,
                    'MMIbwBASEQ[MMI491]' ,'MMIbwBASEQ[MMI492]' ,'MMIbwBASEQ[MMI493]' ,'MMIbwBASEQ[MMI494]' ,'MMIbwBASEQ[MMI495]' ,'MMIbwBASEQ[MMI496]' ,
-                   'MMIbwBASEQ[MMI497]' ,'MMIbwBASEQ[MMI498]'] 
-    
-    #recode items                 
+                   'MMIbwBASEQ[MMI497]' ,'MMIbwBASEQ[MMI498]']
+
+    #recode items
     recoder = {5 : 'NaN', 4 : 1, 3: 0.66, 2: 0.33, 1: 0}
     for i in cols:
-        df[i] = df[i].map(recoder).astype(float64)   
-    
+        df[i] = df[i].map(recoder).astype(float64)
+
     #Calculate total score as the sum for media types
     df['MMI1'] = df[['MMIadBASEQ[MMI41]',
                      'MMIadBASEQ[MMI42]',
@@ -2497,7 +2531,7 @@ def run_MMI(df, out_dir=None):
                      'MMIadBASEQ[MMI411]',
                      'MMIadBASEQ[MMI412]']].sum(axis=1)
 
-    
+
     df['MMI2'] = df[['MMIahBASEQ[MMI81]' ,
                      'MMIahBASEQ[MMI82]' ,
                      'MMIahBASEQ[MMI83]' ,
@@ -2510,7 +2544,7 @@ def run_MMI(df, out_dir=None):
                      'MMIahBASEQ[MMI810]' ,
                      'MMIahBASEQ[MMI811]' ,
                      'MMIahBASEQ[MMI812]']].sum(axis=1)
-    
+
     df['MMI3'] = df[['MMIalBASEQ[MMI121]',
                      'MMIalBASEQ[MMI122]',
                      'MMIalBASEQ[MMI123]',
@@ -2523,7 +2557,7 @@ def run_MMI(df, out_dir=None):
                      'MMIalBASEQ[MMI1210]',
                      'MMIalBASEQ[MMI1211]',
                      'MMIalBASEQ[MMI1212]']].sum(axis=1)
-    
+
     df['MMI4'] = df[['MMIapBASEQ[MMI161]',
                      'MMIapBASEQ[MMI162]',
                      'MMIapBASEQ[MMI163]',
@@ -2536,7 +2570,7 @@ def run_MMI(df, out_dir=None):
                      'MMIapBASEQ[MMI1610]',
                      'MMIapBASEQ[MMI1611]',
                      'MMIapBASEQ[MMI1612]']].sum(axis=1)
-    
+
     df['MMI5'] = df[['MMIatBASEQ[MMI201]',
                      'MMIatBASEQ[MMI202]',
                      'MMIatBASEQ[MMI203]',
@@ -2549,7 +2583,7 @@ def run_MMI(df, out_dir=None):
                      'MMIatBASEQ[MMI2010]',
                      'MMIatBASEQ[MMI2011]',
                      'MMIatBASEQ[MMI2012]']].sum(axis=1)
-    
+
     df['MMI6'] = df[['MMIaxBASEQ[MMI241]',
                      'MMIaxBASEQ[MMI242]',
                      'MMIaxBASEQ[MMI243]',
@@ -2562,7 +2596,7 @@ def run_MMI(df, out_dir=None):
                      'MMIaxBASEQ[MMI2410]',
                      'MMIaxBASEQ[MMI2411]',
                      'MMIaxBASEQ[MMI2412]']].sum(axis=1)
-    
+
     df['MMI7'] = df[['MMIbbBASEQ[MMI281]',
                      'MMIbbBASEQ[MMI282]',
                      'MMIbbBASEQ[MMI283]',
@@ -2575,7 +2609,7 @@ def run_MMI(df, out_dir=None):
                      'MMIbbBASEQ[MMI2810]',
                      'MMIbbBASEQ[MMI2811]',
                      'MMIbbBASEQ[MMI2812]']].sum(axis=1)
-    
+
     df['MMI8'] = df[['MMIbfBASEQ[MMI321]',
                      'MMIbfBASEQ[MMI322]',
                      'MMIbfBASEQ[MMI323]',
@@ -2588,7 +2622,7 @@ def run_MMI(df, out_dir=None):
                      'MMIbfBASEQ[MMI3210]',
                      'MMIbfBASEQ[MMI3211]',
                      'MMIbfBASEQ[MMI3212]']].sum(axis=1)
-    
+
     df['MMI9'] = df[['MMIbkBASEQ[MMI371]',
                      'MMIbkBASEQ[MMI372]',
                      'MMIbkBASEQ[MMI373]',
@@ -2601,7 +2635,7 @@ def run_MMI(df, out_dir=None):
                      'MMIbkBASEQ[MMI3710]',
                      'MMIbkBASEQ[MMI3711]',
                      'MMIbkBASEQ[MMI3712]']].sum(axis=1)
-    
+
     df['MMI10'] = df[['MMIboBASEQ[MMI411]',
                      'MMIboBASEQ[MMI412]',
                      'MMIboBASEQ[MMI413]',
@@ -2614,7 +2648,7 @@ def run_MMI(df, out_dir=None):
                      'MMIboBASEQ[MMI4110]',
                      'MMIboBASEQ[MMI4111]',
                      'MMIboBASEQ[MMI4112]']].sum(axis=1)
-    
+
     df['MMI11'] = df[['MMIbsBASEQ[MMI451]',
                      'MMIbsBASEQ[MMI452]',
                      'MMIbsBASEQ[MMI453]',
@@ -2627,7 +2661,7 @@ def run_MMI(df, out_dir=None):
                      'MMIbsBASEQ[MMI4510]',
                      'MMIbsBASEQ[MMI4511]',
                      'MMIbsBASEQ[MMI4512]']].sum(axis=1)
-    
+
     df['MMI12'] = df[['MMIbwBASEQ[MMI491]',
                      'MMIbwBASEQ[MMI492]',
                      'MMIbwBASEQ[MMI493]',
@@ -2640,12 +2674,12 @@ def run_MMI(df, out_dir=None):
                      'MMIbwBASEQ[MMI4910]',
                      'MMIbwBASEQ[MMI4911]',
                      'MMIbwBASEQ[MMI4912]']].sum(axis=1)
-    
+
     df['TotalHours'] = df[['MMIaa','MMIae', 'MMIai', 'MMIam', 'MMIaq', 'MMIau', 'MMIay', 'MMIbc',
                            'MMIbg', 'MMIbl', 'MMIbp', 'MMIbt']].sum(axis=1)
-    
+
     #mediatypes weighted by hours of primary medium divided by hours spent with all media
-    
+
     df['MMI1xhours‎dividedbytotalhours'] = df['MMI1']*df['MMIaa']/df['TotalHours']
     df['MMI2xhours‎dividedbytotalhours'] = df['MMI2']*df['MMIae']/df['TotalHours']
     df['MMI3xhours‎dividedbytotalhours'] = df['MMI3']*df['MMIai']/df['TotalHours']
@@ -2658,29 +2692,29 @@ def run_MMI(df, out_dir=None):
     df['MMI10xhours‎dividedbytotalhours'] = df['MMI10']*df['MMIbl']/df['TotalHours']
     df['MMI11xhours‎dividedbytotalhours'] = df['MMI11']*df['MMIbp']/df['TotalHours']
     df['MMI12xhours‎dividedbytotalhours'] = df['MMI12']*df['MMIbt']/df['TotalHours']
-    
+
     #Index by summing the weighted scales
-    
+
     df['MMI'] = df[['MMI1xhours‎dividedbytotalhours',
                     'MMI2xhours‎dividedbytotalhours',
                     'MMI3xhours‎dividedbytotalhours',
                     'MMI4xhours‎dividedbytotalhours',
                     'MMI5xhours‎dividedbytotalhours',
                     'MMI6xhours‎dividedbytotalhours',
-                    'MMI7xhours‎dividedbytotalhours', 
+                    'MMI7xhours‎dividedbytotalhours',
                     'MMI8xhours‎dividedbytotalhours',
                     'MMI9xhours‎dividedbytotalhours',
                     'MMI10xhours‎dividedbytotalhours',
                     'MMI11xhours‎dividedbytotalhours',
                     'MMI12xhours‎dividedbytotalhours']].sum(axis=1)
-    
+
     print "Questionnaire measures the amount of media used at the same time"
     print df["MMI"].describe()
-       
+
     sns.distplot(df["MMI"].dropna(), kde = True)
-    
+
     if out_dir:
-        
+
         d = {'MMIaa': '1.1.',
              'MMIab': '1.2.',
              'MMIacBASEQ[MMI31]': '1.3.A',
@@ -2912,67 +2946,67 @@ def run_MMI(df, out_dir=None):
              'MMIbwBASEQ[MMI498]': '12.4.H',
              'MMIbwBASEQ[MMI499]': '12.4.I'}
 
-        df['ID'] = df['ID'].map(lambda x: str(x)[0:5])        
+        df['ID'] = df['ID'].map(lambda x: str(x)[0:5])
         df.rename(columns=d, inplace=True)
-        cols_export = ['ID'] + list(sort(d.values())) + ['MMI']                  
+        cols_export = ['ID'] + list(sort(d.values())) + ['MMI']
         df[cols_export].to_csv('%s/multimediaI.csv' % out_dir, index=False)
-  
-  
+
+
 
 ##############################################################################
 ############################## BIS/BAS #######################################
 ##############################################################################
 
 def run_BISBAS(df, out_dir=None):
-    #items to be recoded                                
+    #items to be recoded
     items_recoded = ['BISBAS02[SQ001]',
-                     'BISBAS22[SQ001]']    
-                             
-    #recode items                 
+                     'BISBAS22[SQ001]']
+
+    #recode items
     recoder = {1: 4, 2: 3, 3: 2, 4: 1 }
     for i in items_recoded:
-        df[i] = df[i].map(recoder).astype(float64)   
+        df[i] = df[i].map(recoder).astype(float64)
 
     #Calculate total score as the sum of Item 1-22.
-    df['BIS'] = df[['BISBAS02[SQ001]', 'BISBAS08[SQ001]', 'BISBAS13[SQ001]', 'BISBAS16[SQ001]', 
+    df['BIS'] = df[['BISBAS02[SQ001]', 'BISBAS08[SQ001]', 'BISBAS13[SQ001]', 'BISBAS16[SQ001]',
                        'BISBAS19[SQ001]', 'BISBAS22[SQ001]', 'BISBAS24[SQ001]']].sum(axis=1)
-    
-    
+
+
     df['BAS'] = df[['BISBAS03[SQ001]', 'BISBAS09[SQ001]', 'BISBAS12[SQ001]', 'BISBAS21[SQ001]',
                        'BISBAS05[SQ001]', 'BISBAS10[SQ001]', 'BISBAS15[SQ001]', 'BISBAS20[SQ001]',
-                       'BISBAS04[SQ001]', 'BISBAS07[SQ001]', 'BISBAS14[SQ001]', 'BISBAS18[SQ001]', 
+                       'BISBAS04[SQ001]', 'BISBAS07[SQ001]', 'BISBAS14[SQ001]', 'BISBAS18[SQ001]',
                        'BISBAS23[SQ001]']].sum(axis=1)
-                       
-    print '\n', '### BIS ###'  
-    print df['BIS'].describe()     
 
-    print '\n', '### BAS ###'  
-    print df['BAS'].describe()                 
+    print '\n', '### BIS ###'
+    print df['BIS'].describe()
 
- 
+    print '\n', '### BAS ###'
+    print df['BAS'].describe()
+
+
     plt.figure(figsize =(16,6))
-    
+
     plt.subplot(121)
     sns.distplot(df["BIS"].dropna(), kde = True)
     plt.xlabel('BIS', fontsize = 14)
-    
+
     plt.subplot(122)
     sns.distplot(df["BAS"].dropna(), kde = True)
     plt.xlabel('BAS', fontsize = 14)
- 
+
 
     if out_dir:
         cols = ['BISBAS01[SQ001]','BISBAS02[SQ001]','BISBAS03[SQ001]','BISBAS04[SQ001]','BISBAS05[SQ001]','BISBAS06[SQ001]','BISBAS07[SQ001]','BISBAS08[SQ001]',
                'BISBAS09[SQ001]','BISBAS10[SQ001]','BISBAS11[SQ001]','BISBAS12[SQ001]','BISBAS13[SQ001]','BISBAS14[SQ001]','BISBAS15[SQ001]','BISBAS16[SQ001]',
                'BISBAS17[SQ001]','BISBAS18[SQ001]','BISBAS19[SQ001]','BISBAS20[SQ001]','BISBAS21[SQ001]','BISBAS22[SQ001]','BISBAS23[SQ001]','BISBAS24[SQ001]']
-     
-        df['ID'] = df['ID'].map(lambda x: str(x)[0:5])        
+
+        df['ID'] = df['ID'].map(lambda x: str(x)[0:5])
         df.rename(columns=dict(zip(cols, [x+1 for x in range(len(cols))])), inplace=True)
-        cols_export = ['ID'] + [x+1 for x in range(len(cols))] + ['BIS', 'BAS']                  
+        cols_export = ['ID'] + [x+1 for x in range(len(cols))] + ['BIS', 'BAS']
         df[cols_export].to_csv('%s/BISBAS.csv' % out_dir, index=False)
-      
-    
-      
+
+
+
 ##############################################################################
 ################################# STAI #######################################
 ##############################################################################
@@ -2982,69 +3016,69 @@ def run_STAI(df, out_dir=None):
     cols = ['STAI01[STAI01]','STAI01[STAI02]','STAI01[STAI03]','STAI01[STAI04]','STAI01[STAI05]','STAI01[STAI06]','STAI01[STAI07]','STAI01[STAI08]',
                  'STAI01[STAI09]','STAI01[STAI10]','STAI11[STAI11]','STAI11[STAI12]','STAI11[STAI13]','STAI11[STAI14]','STAI11[STAI15]','STAI11[STAI16]',
                  'STAI11[STAI17]','STAI11[STAI18]','STAI11[STAI19]','STAI11[STAI20]']
-    
-    items_recoded = ['STAI01[STAI01]', 'STAI01[STAI06]', 'STAI01[STAI07]', 'STAI01[STAI10]', 
+
+    items_recoded = ['STAI01[STAI01]', 'STAI01[STAI06]', 'STAI01[STAI07]', 'STAI01[STAI10]',
                      'STAI11[STAI13]', 'STAI11[STAI16]', 'STAI11[STAI19]']
-                    
+
     recoder = {1: 4, 2: 3, 3: 2, 4: 1 }
     for i in items_recoded:
-        df[i] = df[i].map(recoder).astype(float64)   
-    
+        df[i] = df[i].map(recoder).astype(float64)
+
     df['STAI_A-Trait_summary_sum'] = df[cols].sum(axis=1)
-    
-    print df['STAI_A-Trait_summary_sum'].describe()  
+
+    print df['STAI_A-Trait_summary_sum'].describe()
     plt.figure
     sns.distplot(df['STAI_A-Trait_summary_sum'].dropna(), kde = True)
     plt.show()
-    
+
     if out_dir:
-        df['ID'] = df['ID'].map(lambda x: str(x)[0:5])        
+        df['ID'] = df['ID'].map(lambda x: str(x)[0:5])
         df.rename(columns=dict(zip(cols, [x+1 for x in range(len(cols))])), inplace=True)
-        cols_export = ['ID'] + [x+1 for x in range(len(cols))] + ['STAI_A-Trait_summary_sum']                  
+        cols_export = ['ID'] + [x+1 for x in range(len(cols))] + ['STAI_A-Trait_summary_sum']
         df[cols_export].to_csv('%s/state-trait_anxiety.csv' % out_dir, index=False)
-      
 
 
-##############################################################################    
+
+##############################################################################
 ############################### STAXI ########################################
 ##############################################################################
 
 def run_STAXI(df, out_dir=None):
 
-              
+
     cols_trait2 = ['STAXI11[STAXI11]','STAXI11[STAXI12]','STAXI11[STAXI13]','STAXI11[STAXI14]','STAXI11[STAXI15]',
                   'STAXI11[STAXI16]','STAXI11[STAXI17]','STAXI11[STAXI18]','STAXI11[STAXI19]','STAXI11[STAXI20]']
     cols_trait3_inward = ['STAXI21[STAXI22]', 'STAXI21[STAXI24]','STAXI21[STAXI25]', 'STAXI21[STAXI28]',
                           'STAXI21[STAXI30]', 'STAXI34[STAXI41]','STAXI34[STAXI42]', 'STAXI34[STAXI44]']
-    cols_trait3_outward = ['STAXI21[STAXI26]','STAXI21[STAXI27]', 'STAXI21[STAXI31]', 'STAXI34[STAXI35]', 
+    cols_trait3_outward = ['STAXI21[STAXI26]','STAXI21[STAXI27]', 'STAXI21[STAXI31]', 'STAXI34[STAXI35]',
                            'STAXI34[STAXI37]','STAXI34[STAXI38]','STAXI34[STAXI39]', 'STAXI34[STAXI43]']
     cols_trait3_control = ['STAXI21[STAXI21]', 'STAXI21[STAXI23]', 'STAXI21[STAXI29]', 'STAXI21[STAXI32]',
                            'STAXI21[STAXI33]','STAXI34[STAXI34]', 'STAXI34[STAXI36]', 'STAXI34[STAXI40]']
-    
+
     df["anger_trait"] = df[cols_trait2].sum(axis=1)
     df["anger_inward"] = df[cols_trait3_inward].sum(axis=1)
     df["anger_outward"] = df[cols_trait3_outward].sum(axis=1)
     df["anger_control"] = df[cols_trait3_control].sum(axis=1)
-    
-    
+
+
     print '\n', '### anger_trait ###'
     print df["anger_trait"].describe()
-    
+
     print '\n', '### anger_inward ###'
-    print df["anger_inward"].describe()   
-    
+    print df["anger_inward"].describe()
+
     print '\n', '### anger_outward ###'
-    print df["anger_outward"].describe()      
-    
+    print df["anger_outward"].describe()
+
     print '\n', '### anger_control ###'
-    print df["anger_control"].describe()      
-    
+    print df["anger_control"].describe()
+
     plt.figure(figsize =(16,12))
-    
+
     plt.subplot(221)
     sns.distplot(df["anger_trait"].dropna(), kde = True)
     plt.xlabel('anger - trait', fontsize = 14)
-    
+
     plt.subplot(222)
     sns.distplot(df["anger_inward"].dropna(), kde = True)
     plt.xlabel('inward-directed anger', fontsize = 14)
@@ -3052,13 +3086,13 @@ def run_STAXI(df, out_dir=None):
     plt.subplot(223)
     sns.distplot(df["anger_outward"].dropna(), kde = True)
     plt.xlabel('outward-directed anger', fontsize = 14)
-    
+
     plt.subplot(224)
     sns.distplot(df["anger_control"].dropna(), kde = True)
     plt.xlabel('anger control', fontsize = 14)
 
     if out_dir:
-        
+
         cols = ['STAXI01[STAXI01]','STAXI01[STAXI02]','STAXI01[STAXI03]','STAXI01[STAXI04]','STAXI01[STAXI05]','STAXI01[STAXI06]','STAXI01[STAXI07]',
               'STAXI01[STAXI08]','STAXI01[STAXI09]','STAXI01[STAXI10]','STAXI11[STAXI11]','STAXI11[STAXI12]','STAXI11[STAXI13]','STAXI11[STAXI14]','STAXI11[STAXI15]',
               'STAXI11[STAXI16]','STAXI11[STAXI17]','STAXI11[STAXI18]','STAXI11[STAXI19]','STAXI11[STAXI20]','STAXI21[STAXI21]','STAXI21[STAXI22]','STAXI21[STAXI23]',
@@ -3066,8 +3100,7 @@ def run_STAXI(df, out_dir=None):
               'STAXI21[STAXI32]','STAXI21[STAXI33]','STAXI34[STAXI34]','STAXI34[STAXI35]','STAXI34[STAXI36]','STAXI34[STAXI37]','STAXI34[STAXI38]','STAXI34[STAXI39]',
               'STAXI34[STAXI40]','STAXI34[STAXI41]','STAXI34[STAXI42]','STAXI34[STAXI43]','STAXI34[STAXI44]']
 
-        df['ID'] = df['ID'].map(lambda x: str(x)[0:5])        
+        df['ID'] = df['ID'].map(lambda x: str(x)[0:5])
         df.rename(columns=dict(zip(cols_STAI, [x+1 for x in range(len(cols_STAI))])), inplace=True)
-        cols_export = ['ID'] + [x+1 for x in range(len(cols_STAI))] + ["anger_trait", "anger_inward", "anger_outward", "anger_control"]            
+        cols_export = ['ID'] + [x+1 for x in range(len(cols_STAI))] + ["anger_trait", "anger_inward", "anger_outward", "anger_control"]
         df[cols_export].to_csv('%s/state-trait_anger_expression.csv' % out_dir, index=False)
-      
